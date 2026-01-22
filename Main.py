@@ -78,8 +78,11 @@ async def run_playwright():
     
     await page.screenshot(path = "debug.png")
     st.image("debug.png")
-    await page.get_by_role("button", name = "ELFOGADOM").click(force = True)
-    await page.get_by_role("button", name = "Értem!").click(force = True)
+    await page.get_by_role("button", name = "CONFIRM").click(force = True)
+    await page.screenshot(path = "debug2.png")
+    st.image("debug2.png")
+    # await page.get_by_role("button", name = "ELFOGADOM").click(force = True)
+    # await page.get_by_role("button", name = "Értem!").click(force = True)
     st.write("itt")
     for line in lines:
       st.write("itt")
