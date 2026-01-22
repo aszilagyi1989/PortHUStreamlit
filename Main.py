@@ -54,7 +54,7 @@ async def run_playwright():
     for line in lines:
       if line.endswith("találat megjelenítése"):
         result = int(line.split(" ")[0])
-        print(result)
+        # print(result)
         break
       
     koncertek = all_page_text.split("Hozzám legközelebb")[1]
