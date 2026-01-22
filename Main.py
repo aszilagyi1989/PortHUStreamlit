@@ -64,7 +64,7 @@ async def run_playwright():
     name = ""
     # print(lines)
     
-    print("itt")
+    st.write("itt")
     for line in lines:
       print("itt")
       print(line)
