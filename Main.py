@@ -30,7 +30,7 @@ st.title('Budapesti programok')
 
 async def run_playwright():
   async with async_playwright() as p:
-    browser = await p.chromium.launch(headless = False)
+    browser = await p.chromium.launch(headless = True) # False
     page = await browser.new_page()
     await page.goto("https://port.hu")
     await page.wait_for_timeout(3000)
