@@ -6,8 +6,9 @@ import pandas as pd
 import nest_asyncio
 nest_asyncio.apply()
 import sys
-# import os
-# os.system("playwright install")
+import os
+os.system("playwright install")
+os.system("playwright install-deps")
 # import subprocess
 # subprocess.run(["playwright", "install", "chromium"])
 
