@@ -67,18 +67,19 @@ async def run_playwright():
     
     st.write("itt")
     for line in lines:
-      print("itt")
-      print(line)
+      st.write("itt")
+      st.write(line)
       if koncert == True and line != name and line != "JEGY" and line != "Ringató":
         await page.get_by_role("link", name = line).nth(0).click(force = True)
         await page.wait_for_timeout(2000)
         all_page_text = await page.locator("body").inner_text()
+        st.write(all_page_text)
         # print(all_page_text)
         
         
         # all_page_text = str(all_page_text).split("Címlapon")[0]
         # all_page_text = str(all_page_text).split("MEGOSZTOM")[1]
-        koncertek = all_page_text
+        # koncertek = all_page_text
         break
         await page.go_back()
 
@@ -117,7 +118,7 @@ async def run_playwright():
     # content = await page.title()
     await browser.close()
     
-    return koncertek # result # str(all_page_text).split("Hozzám legközelebb")[1] # koncertek # lines # all_page_text # content
+    return "" # koncertek # result # str(all_page_text).split("Hozzám legközelebb")[1] # koncertek # lines # all_page_text # content
 
 selected = option_menu(None, ['Koncertek'], menu_icon = 'cast', default_index = 0, orientation = 'horizontal')
 
