@@ -3,4 +3,4 @@ pandas
 nest_asyncio
 playwright.async_api
 streamlit
-streamlit-option-menu
+streamlit_option_menu
