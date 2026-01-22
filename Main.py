@@ -66,6 +66,7 @@ async def run_playwright():
     
     
     for line in lines:
+      print("itt")
       print(line)
       if koncert == True and line != name and line != "JEGY" and line != "Ringató":
         await page.get_by_role("link", name = line).nth(0).click(force = True)
@@ -114,7 +115,7 @@ async def run_playwright():
     # content = await page.title()
     await browser.close()
     
-    return lines # koncertek # all_page_text # content
+    return "" # lines # koncertek # all_page_text # content
 
 selected = option_menu(None, ['Koncertek'], menu_icon = 'cast', default_index = 0, orientation = 'horizontal')
 
