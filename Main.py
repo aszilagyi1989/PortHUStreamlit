@@ -6,6 +6,8 @@ import pandas as pd
 import nest_asyncio
 nest_asyncio.apply()
 import sys
+import subprocess
+subprocess.run(["playwright", "install", "chromium"])
 
 if sys.platform == 'win32':
   asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
