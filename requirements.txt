@@ -1,4 +1,4 @@
-altair.vegalite.v4
+altair
 asyncio
 pandas
 nest_asyncio
