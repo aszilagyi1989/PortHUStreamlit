@@ -65,6 +65,8 @@ async def run_playwright():
     name = ""
     # print(lines)
     
+    await page.screenshot(path = "debug.png")
+    st.image("debug.png")
     await page.get_by_role("button", name = "ELFOGADOM").click(force = True)
     await page.get_by_role("button", name = "Értem!").click(force = True)
     st.write("itt")
@@ -72,7 +74,7 @@ async def run_playwright():
       st.write("itt")
       st.write(line)
       if koncert == True and line != name and line != "JEGY" and line != "Ringató":
-        # await page.screenshot(path = "debug.png")
+        await page.screenshot(path = "debug.png")
         async with page.expect_popup() as popup_info:
          # peldanyszam = page1.get_by_role("link", name = line).count()
           await page.get_by_role("link", name = line).nth(0).click(force = True)
