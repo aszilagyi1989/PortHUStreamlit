@@ -31,6 +31,16 @@ async def run_playwright():
     context = await browser.new_context(
             user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         )
+    
+    context.add_cookies([
+    {
+        "name": "SOCS",
+        "value": "CAISHAgBEhJnd3NfMjAyNDA2MjEtMF8SQzEaBmVuIAEaBgiAsd-yBq",
+        "domain": ".google.com",
+        "path": "/",
+        "expires": int(time.time()) + 3600,
+    },
+    ])
         
     page = await context.new_page() # browser.
     await page.goto("https://port.hu/programkereso/zene") # 
