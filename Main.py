@@ -93,7 +93,7 @@ async def run_playwright():
     for line in lines:
       st.write("itt")
       st.write(line)
-      if koncert == True and line != name and line != "JEGY" and line != "Ringató":
+      if koncert == True and line != name and line != "JEGY": # and line != "Ringató"
         await page.screenshot(path = "debug.png")
         async with page.expect_popup() as popup_info:
          # peldanyszam = page1.get_by_role("link", name = line).count()
@@ -103,11 +103,12 @@ async def run_playwright():
          # await popup_page.wait_for_load_state("networkidle")
         await popup_page.wait_for_timeout(2000)
         data = await popup_page.locator("body").inner_text()
-        st.write(data)
+        
         
         data = str(data).split("Címlapon")[0]
         data = str(data).split("MEGOSZTOM")[1]
-        break
+        st.write(data)
+        # break
 
       if line == "KONCERT":
         koncert = True
@@ -127,5 +128,3 @@ if selected == 'Koncertek':
   st.write(result)
   
   # page.get_by_role("button", name="2").click()
-  # page.get_by_role("button").nth(5).click()
-  # page.get_by_role("button").filter(has_text=re.compile(r"^$")).nth(5).click()
