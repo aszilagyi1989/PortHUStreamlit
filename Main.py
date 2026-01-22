@@ -86,8 +86,11 @@ async def run_playwright():
     # await page.get_by_role("button", name = "ELFOGADOM").click(force = True)
     # await page.get_by_role("button", name = "Értem!").click(force = True)
     for line in lines:
+      
+      if line == "JEGY":
+        continue
 
-      if koncert == True and line != name and line != "JEGY": # and line != "Ringató"
+      if koncert == True and line != name: # and line != "Ringató"
         name = line
         # await page.screenshot(path = "debug.png")
         async with page.expect_popup() as popup_info:
