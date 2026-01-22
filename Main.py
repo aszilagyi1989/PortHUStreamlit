@@ -32,29 +32,16 @@ async def run_playwright():
     context = await browser.new_context(
             user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         )
-    
-    # context.add_cookies([
-    # {
-    #     "name": "SOCS",
-    #     "value": "CAISHAgBEhJnd3NfMjAyNDA2MjEtMF8SQzEaBmVuIAEaBgiAsd-yBq",
-    #     "domain": "port.hu",
-    #     "path": "/",
-    #     "expires": int(time.time()) + 3600,
-    # },
-    # ])
         
     page = await context.new_page() # browser.
     await page.goto("https://port.hu/programkereso/zene") # 
     # await page.wait_for_load_state("networkidle")
-    await page.wait_for_timeout(3000)
+    # await page.wait_for_timeout(3000)
     # await page.get_by_role("button", name = "ELFOGADOM").click(force = True)
     # await page.get_by_role("button", name = "Értem!").click(force = True)
     # await page.get_by_role("link", name = "Koncert", exact = True).click(force = True)
-    # # await page.wait_for_load_state("networkidle")
-    # await page.wait_for_timeout(2000)
     await page.get_by_text("találat megjelenítése").click(force = True)
-    await page.wait_for_timeout(2000)
-    # await page.wait_for_load_state("networkidle")
+    # await page.wait_for_timeout(2000)
     
     all_page_text = await page.locator("body").inner_text()
     
@@ -83,8 +70,7 @@ async def run_playwright():
     await page.get_by_role("button", name = "Értem!").click(force = True)
     # await page.screenshot(path = "debug4.png")
     # st.image("debug4.png")
-    # await page.get_by_role("button", name = "ELFOGADOM").click(force = True)
-    # await page.get_by_role("button", name = "Értem!").click(force = True)
+    
     for line in lines:
       
       if line == "JEGY":
@@ -97,9 +83,7 @@ async def run_playwright():
          # peldanyszam = page1.get_by_role("link", name = line).count()
           await page.get_by_role("link", name = line).nth(0).click(force = True)
         popup_page = await popup_info.value
-         # st.write(popup_page)
-         # await popup_page.wait_for_load_state("networkidle")
-        await popup_page.wait_for_timeout(2000)
+        # await popup_page.wait_for_timeout(2000)
         data = await popup_page.locator("body").inner_text()
         
         try:
@@ -125,8 +109,8 @@ async def run_playwright():
 selected = option_menu(None, ['Koncertek'], menu_icon = 'cast', default_index = 0, orientation = 'horizontal')
 
 if selected == 'Koncertek':
-  st.write(sys.platform)
+  # st.write(sys.platform)
   result = asyncio.run(run_playwright())
   st.write(result)
   
-  # page.get_by_role("button", name="2").click()
+  # page.get_by_role("button", name = "2").click()
