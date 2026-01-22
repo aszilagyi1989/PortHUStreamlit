@@ -35,7 +35,7 @@ async def run_playwright():
     page = await context.new_page() # browser.
     await page.goto("https://port.hu/programkereso/zene") # 
     # await page.wait_for_load_state("networkidle")
-    await page.wait_for_timeout(2000)
+    await page.wait_for_timeout(3000)
     # await page.get_by_role("button", name = "ELFOGADOM").click(force = True)
     # await page.get_by_role("button", name = "Értem!").click(force = True)
     # await page.get_by_role("link", name = "Koncert", exact = True).click(force = True)
@@ -65,57 +65,33 @@ async def run_playwright():
     name = ""
     # print(lines)
     
+    await page.get_by_role("button", name = "ELFOGADOM").click(force = True)
+    await page.get_by_role("button", name = "Értem!").click(force = True)
     st.write("itt")
     for line in lines:
       st.write("itt")
       st.write(line)
       if koncert == True and line != name and line != "JEGY" and line != "Ringató":
-        # await page.click(line, modifiers = ["Control"])
-        await page.get_by_role("link", name = "lunchtime-koncert-egri-nora-quartet/event-6207905").nth(0).click(force = True)  # .dispatch_event("click")
-        await page.wait_for_timeout(2000)
-        data = await page.locator("body").inner_text()
+        # await page.screenshot(path = "debug.png")
+        async with page.expect_popup() as popup_info:
+         # peldanyszam = page1.get_by_role("link", name = line).count()
+          await page.get_by_role("link", name = line).nth(0).click(force = True)
+        popup_page = await popup_info.value
+         # st.write(popup_page)
+         # await popup_page.wait_for_load_state("networkidle")
+        await popup_page.wait_for_timeout(2000)
+        data = await popup_page.locator("body").inner_text()
         st.write(data)
-        # print(all_page_text)
         
-        
-        # all_page_text = str(all_page_text).split("Címlapon")[0]
-        # all_page_text = str(all_page_text).split("MEGOSZTOM")[1]
-        # koncertek = all_page_text
+        data = str(data).split("Címlapon")[0]
+        data = str(data).split("MEGOSZTOM")[1]
         break
-        await page.go_back()
 
       if line == "KONCERT":
         koncert = True
       else:
         koncert = False
         
-        
-        # locator = page.get_by_role("link", name = line).nth(0)
-        # await locator.wait_for(state = "attached")
-        # async with page.expect_popup() as popup_info:
-        #   await locator.wait_for(state = "visible")
-        #   await locator.click(force = True)
-        #   
-        # popup_page = await popup_info.value
-          
-        # async with page.expect_popup() as popup_info:
-        #   print(line)
-        #   # peldanyszam = page1.get_by_role("link", name = line).count()
-        #   name = line
-        #   await page.get_by_role("link", name = line).nth(0).click(force = True)
-        #   # print(page1_info.value)
-        #   popup_page = await popup_info.value
-        #   # await popup_page.wait_for_load_state("networkidle")
-        #   await popup_page.wait_for_timeout(2000)
-          # all_page_text = await popup_page.locator("body").inner_text()
-          # all_page_text = all_page_text.split("Címlapon")[0] 
-          # all_page_text = all_page_text.split("MEGOSZTOM")[1]
-          # print(all_page_text) # LLM modell kell
-       #  break
-
-
-      # print(line)
-    
     # content = await page.title()
     await browser.close()
     
