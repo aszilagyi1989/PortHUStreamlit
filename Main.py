@@ -88,7 +88,11 @@ async def run_playwright():
         popup_page = await popup_info.value
         # await popup_page.wait_for_load_state("networkidle")
         await popup_page.wait_for_timeout(2000)
-        data = await popup_page.locator("body").inner_text()
+        try:
+          data = await popup_page.locator("body").inner_text()
+        except Exception as e:
+          st.error(f"Hiba történt: {e}. A következő eseménynél: {line}")
+          continue
         
         try:
           data = str(data).split("Címlapon")[0]
