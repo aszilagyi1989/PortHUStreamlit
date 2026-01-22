@@ -94,7 +94,8 @@ async def run_playwright():
       st.write("itt")
       st.write(line)
       if koncert == True and line != name and line != "JEGY": # and line != "Ringató"
-        await page.screenshot(path = "debug.png")
+        name = line
+        # await page.screenshot(path = "debug.png")
         async with page.expect_popup() as popup_info:
          # peldanyszam = page1.get_by_role("link", name = line).count()
           await page.get_by_role("link", name = line).nth(0).click(force = True)
@@ -104,9 +105,12 @@ async def run_playwright():
         await popup_page.wait_for_timeout(2000)
         data = await popup_page.locator("body").inner_text()
         
-        
-        data = str(data).split("Címlapon")[0]
-        data = str(data).split("MEGOSZTOM")[1]
+        try:
+          data = str(data).split("Címlapon")[0]
+          data = str(data).split("MEGOSZTOM")[1]
+        except e as Exception:
+          data = await popup_page.locator("body").inner_text()
+          st.write(f"Hiba történt: {e}")
         st.write(data)
         # break
 
