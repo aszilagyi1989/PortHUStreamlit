@@ -51,6 +51,7 @@ async def run_playwright():
     all_page_text = str(all_page_text).split("Címlapon")[0] 
     talalatok = str(all_page_text).split("Hozzám legközelebb")[0]
     lines = talalatok.splitlines()
+    result = 0
     for line in lines:
       if line.endswith("találat megjelenítése"):
         result = int(line.split(" ")[0])
@@ -117,7 +118,7 @@ async def run_playwright():
     # content = await page.title()
     await browser.close()
     
-    return koncertek # str(all_page_text).split("Hozzám legközelebb")[1] # koncertek # lines # all_page_text # content
+    return result # str(all_page_text).split("Hozzám legközelebb")[1] # koncertek # lines # all_page_text # content
 
 selected = option_menu(None, ['Koncertek'], menu_icon = 'cast', default_index = 0, orientation = 'horizontal')
 
