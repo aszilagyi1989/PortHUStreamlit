@@ -66,6 +66,7 @@ async def run_playwright():
         locator = page.get_by_role("link", name = line).nth(0)
         await locator.wait_for(state = "attached")
         async with page.expect_popup() as popup_info:
+          await locator.wait_for(state = "visible")
           await locator.click(force = True)
           
         popup_page = await popup_info.value
