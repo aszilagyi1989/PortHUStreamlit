@@ -74,7 +74,7 @@ async def run_playwright():
         all_page_text = await page.locator("body").inner_text()
         
         # print(all_page_text)
-        koncertek = all_page_text
+        # koncertek = all_page_text
         break
         # all_page_text = all_page_text.split("Címlapon")[0]
         # all_page_text = all_page_text.split("MEGOSZTOM")[1]
@@ -115,7 +115,7 @@ async def run_playwright():
     # content = await page.title()
     await browser.close()
     
-    return str(all_page_text).split("Hozzám legközelebb")[1] # koncertek # lines # all_page_text # content
+    return koncertek # str(all_page_text).split("Hozzám legközelebb")[1] # koncertek # lines # all_page_text # content
 
 selected = option_menu(None, ['Koncertek'], menu_icon = 'cast', default_index = 0, orientation = 'horizontal')
 
