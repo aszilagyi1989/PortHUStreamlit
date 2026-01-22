@@ -1,4 +1,4 @@
 asyncio
 pandas
 nest_asyncio
-playwright.async_api
+playwright
