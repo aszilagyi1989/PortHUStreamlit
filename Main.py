@@ -48,8 +48,8 @@ async def run_playwright():
     all_page_text = await page.locator("body").inner_text()
     # print(all_page_text)
     
-    all_page_text = all_page_text.split("Címlapon")[0] 
-    talalatok = all_page_text.split("Hozzám legközelebb")[0]
+    all_page_text = str(all_page_text).split("Címlapon")[0] 
+    talalatok = str(all_page_text).split("Hozzám legközelebb")[0]
     lines = talalatok.splitlines()
     for line in lines:
       if line.endswith("találat megjelenítése"):
@@ -57,7 +57,7 @@ async def run_playwright():
         # print(result)
         break
       
-    koncertek = all_page_text.split("Hozzám legközelebb")[1]
+    koncertek = str(all_page_text).split("Hozzám legközelebb")[1]
     # print(koncertek)
     lines = koncertek.splitlines()
     koncert = False
