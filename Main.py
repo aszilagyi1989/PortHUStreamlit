@@ -31,12 +31,12 @@ async def run_playwright():
         )
         
     page = await context.new_page() # browser.
-    await page.goto("https://port.hu/programkereso/zene")
+    await page.goto("https://port.hu") # /programkereso/zene
     # await page.wait_for_load_state("networkidle")
-    # await page.wait_for_timeout(2000)
-    # await page.get_by_role("button", name = "ELFOGADOM").click(force = True)
-    # await page.get_by_role("button", name = "Értem!").click(force = True)
-    # await page.get_by_role("link", name = "Koncert", exact = True).click(force = True)
+    await page.wait_for_timeout(2000)
+    await page.get_by_role("button", name = "ELFOGADOM").click(force = True)
+    await page.get_by_role("button", name = "Értem!").click(force = True)
+    await page.get_by_role("link", name = "Koncert", exact = True).click(force = True)
     # await page.wait_for_load_state("networkidle")
     await page.wait_for_timeout(2000)
     await page.get_by_text("találat megjelenítése").click(force = True)
@@ -62,7 +62,7 @@ async def run_playwright():
     name = ""
     # print(lines)
     for line in lines:
-      if koncert == True and line != name and line != "JEGY":
+      if koncert == True and line != name and line != "JEGY" and line != "Ringató":
         await page.get_by_role("link", name = line).nth(0).click(force = True)
         await page.wait_for_timeout(2000)
         all_page_text = await page.locator("body").inner_text()
