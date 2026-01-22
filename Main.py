@@ -66,11 +66,12 @@ async def run_playwright():
     
     
     for line in lines:
+      print(line)
       if koncert == True and line != name and line != "JEGY" and line != "Ringató":
         await page.get_by_role("link", name = line).nth(0).click(force = True)
         await page.wait_for_timeout(2000)
         all_page_text = await page.locator("body").inner_text()
-        print(line)
+        
         # print(all_page_text)
         koncertek = all_page_text
         break
