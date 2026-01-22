@@ -3,5 +3,5 @@ asyncio
 pandas
 nest_asyncio
 playwright
-streamlit
+streamlit>=1.23.0
 streamlit-option-menu
