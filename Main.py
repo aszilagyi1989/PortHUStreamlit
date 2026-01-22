@@ -6,6 +6,7 @@ import pandas as pd
 import nest_asyncio
 nest_asyncio.apply()
 import sys
+import time
 import subprocess
 subprocess.run(["playwright", "install", "chromium"])
 
