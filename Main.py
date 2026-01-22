@@ -63,13 +63,24 @@ async def run_playwright():
     # print(lines)
     for line in lines:
       if koncert == True and line != name and line != "JEGY":
-        locator = page.get_by_role("link", name = line).nth(0)
-        await locator.wait_for(state = "attached")
-        async with page.expect_popup() as popup_info:
-          await locator.wait_for(state = "visible")
-          await locator.click(force = True)
-          
-        popup_page = await popup_info.value
+        await page.get_by_role("link", name = line).nth(0).click(force = True)
+        await page.wait_for_timeout(2000)
+        all_page_text = await page.locator("body").inner_text()
+        all_page_text = all_page_text.split("Címlapon")[0] 
+        all_page_text = all_page_text.split("MEGOSZTOM")[1]
+        await page.go_back()
+      
+      if line == "KONCERT":
+        koncert = True
+      else:
+        koncert = False
+        # locator = page.get_by_role("link", name = line).nth(0)
+        # await locator.wait_for(state = "attached")
+        # async with page.expect_popup() as popup_info:
+        #   await locator.wait_for(state = "visible")
+        #   await locator.click(force = True)
+        #   
+        # popup_page = await popup_info.value
           
         # async with page.expect_popup() as popup_info:
         #   print(line)
@@ -80,16 +91,13 @@ async def run_playwright():
         #   popup_page = await popup_info.value
         #   # await popup_page.wait_for_load_state("networkidle")
         #   await popup_page.wait_for_timeout(2000)
-          all_page_text = await popup_page.locator("body").inner_text()
-          all_page_text = all_page_text.split("Címlapon")[0] 
-          all_page_text = all_page_text.split("MEGOSZTOM")[1]
+          # all_page_text = await popup_page.locator("body").inner_text()
+          # all_page_text = all_page_text.split("Címlapon")[0] 
+          # all_page_text = all_page_text.split("MEGOSZTOM")[1]
           # print(all_page_text) # LLM modell kell
        #  break
 
-      if line == "KONCERT":
-        koncert = True
-      else:
-        koncert = False
+
       # print(line)
     
     # content = await page.title()
