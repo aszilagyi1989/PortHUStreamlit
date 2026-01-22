@@ -6,9 +6,9 @@ import pandas as pd
 import nest_asyncio
 nest_asyncio.apply()
 import sys
-import os
-os.system("playwright install")
-os.system("playwright install-deps")
+# import os
+# os.system("playwright install")
+# os.system("playwright install-deps")
 # import subprocess
 # subprocess.run(["playwright", "install", "chromium"])
 
@@ -42,6 +42,6 @@ async def run_playwright():
 selected = option_menu(None, ['Koncertek'], menu_icon = 'cast', default_index = 0, orientation = 'horizontal')
 
 if selected == 'Koncertek':
-  print(sys.platform)
+  st.write(sys.platform)
   result = asyncio.run(run_playwright())
   st.write(result)
