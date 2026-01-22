@@ -68,8 +68,11 @@ async def run_playwright():
         await page.get_by_role("link", name = line).nth(0).click(force = True)
         await page.wait_for_timeout(2000)
         all_page_text = await page.locator("body").inner_text()
-        all_page_text = all_page_text.split("Címlapon")[0] 
-        all_page_text = all_page_text.split("MEGOSZTOM")[1]
+        print(all_page_text)
+        koncertek = all_page_text
+        break
+        # all_page_text = all_page_text.split("Címlapon")[0] 
+        # all_page_text = all_page_text.split("MEGOSZTOM")[1]
         await page.go_back()
       
       if line == "KONCERT":
