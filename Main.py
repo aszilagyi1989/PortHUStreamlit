@@ -70,7 +70,8 @@ async def run_playwright():
         await page.get_by_role("link", name = line).nth(0).click(force = True)
         await page.wait_for_timeout(2000)
         all_page_text = await page.locator("body").inner_text()
-        print(all_page_text)
+        print(line)
+        # print(all_page_text)
         koncertek = all_page_text
         break
         # all_page_text = all_page_text.split("Címlapon")[0]
@@ -112,7 +113,7 @@ async def run_playwright():
     # content = await page.title()
     await browser.close()
     
-    return koncertek # all_page_text # content
+    return lines # koncertek # all_page_text # content
 
 selected = option_menu(None, ['Koncertek'], menu_icon = 'cast', default_index = 0, orientation = 'horizontal')
 
