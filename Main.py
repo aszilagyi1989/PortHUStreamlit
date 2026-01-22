@@ -32,8 +32,8 @@ async def run_playwright():
         
     page = await context.new_page() # browser.
     await page.goto("https://port.hu")
-    # await page.wait_for_load_state("networkidle")
-    await page.wait_for_timeout(2000)
+    await page.wait_for_load_state("networkidle")
+    # await page.wait_for_timeout(2000)
     await page.get_by_role("button", name = "ELFOGADOM").click()
     await page.get_by_role("button", name = "Értem!").click()
     await page.get_by_role("link", name = "Koncert", exact = True).click()
