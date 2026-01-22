@@ -57,7 +57,6 @@ async def run_playwright():
     # await page.wait_for_load_state("networkidle")
     
     all_page_text = await page.locator("body").inner_text()
-    # print(all_page_text)
     
     all_page_text = str(all_page_text).split("Címlapon")[0] 
     talalatok = str(all_page_text).split("Hozzám legközelebb")[0]
@@ -66,33 +65,28 @@ async def run_playwright():
     for line in lines:
       if line.endswith("találat megjelenítése"):
         result = int(line.split(" ")[0])
-        # print(result)
         break
       
     koncertek = str(all_page_text).split("Hozzám legközelebb")[1]
-    # print(koncertek)
     lines = str(koncertek).splitlines()
     koncert = False
     name = ""
-    # print(lines)
     
-    await page.screenshot(path = "debug.png")
-    st.image("debug.png")
+    # await page.screenshot(path = "debug.png")
+    # st.image("debug.png")
     await page.get_by_role("button", name = "CONFIRM").click(force = True)
-    await page.screenshot(path = "debug2.png")
-    st.image("debug2.png")
+    # await page.screenshot(path = "debug2.png")
+    # st.image("debug2.png")
     await page.click('button:has-text("OK")')
-    await page.screenshot(path = "debug3.png")
-    st.image("debug3.png")
+    # await page.screenshot(path = "debug3.png")
+    # st.image("debug3.png")
     await page.get_by_role("button", name = "Értem!").click(force = True)
-    await page.screenshot(path = "debug4.png")
-    st.image("debug4.png")
+    # await page.screenshot(path = "debug4.png")
+    # st.image("debug4.png")
     # await page.get_by_role("button", name = "ELFOGADOM").click(force = True)
     # await page.get_by_role("button", name = "Értem!").click(force = True)
-    st.write("itt")
     for line in lines:
-      st.write("itt")
-      st.write(line)
+
       if koncert == True and line != name and line != "JEGY": # and line != "Ringató"
         name = line
         # await page.screenshot(path = "debug.png")
@@ -108,9 +102,10 @@ async def run_playwright():
         try:
           data = str(data).split("Címlapon")[0]
           data = str(data).split("MEGOSZTOM")[1]
-        except e as Exception:
+        except Exception as e:
           data = await popup_page.locator("body").inner_text()
           st.write(f"Hiba történt: {e}")
+        
         st.write(data)
         # break
 
