@@ -70,7 +70,8 @@ async def run_playwright():
       st.write("itt")
       st.write(line)
       if koncert == True and line != name and line != "JEGY" and line != "Ringató":
-        await page.get_by_role("link", name = line).nth(0).dispatch_event("click") # .click(force = True)
+        await page.click(line, modifiers = ["Control"])
+        # await page.get_by_role("link", name = line).nth(0).click(force = True)  # .dispatch_event("click")
         await page.wait_for_timeout(2000)
         data = await page.locator("body").inner_text()
         st.write(data)
