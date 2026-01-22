@@ -63,15 +63,22 @@ async def run_playwright():
     # print(lines)
     for line in lines:
       if koncert == True and line != name and line != "JEGY":
+        locator = page.get_by_role("link", name = line).nth(0)
+        await locator.wait_for(state = "attached")
         async with page.expect_popup() as popup_info:
-          print(line)
-          # peldanyszam = page1.get_by_role("link", name = line).count()
-          name = line
-          await page.get_by_role("link", name = line).nth(0).click(force = True)
-          # print(page1_info.value)
-          popup_page = await popup_info.value
-          # await popup_page.wait_for_load_state("networkidle")
-          await popup_page.wait_for_timeout(2000)
+          await locator.click(force = True)
+          
+        popup_page = await popup_info.value
+          
+        # async with page.expect_popup() as popup_info:
+        #   print(line)
+        #   # peldanyszam = page1.get_by_role("link", name = line).count()
+        #   name = line
+        #   await page.get_by_role("link", name = line).nth(0).click(force = True)
+        #   # print(page1_info.value)
+        #   popup_page = await popup_info.value
+        #   # await popup_page.wait_for_load_state("networkidle")
+        #   await popup_page.wait_for_timeout(2000)
           all_page_text = await popup_page.locator("body").inner_text()
           all_page_text = all_page_text.split("Címlapon")[0] 
           all_page_text = all_page_text.split("MEGOSZTOM")[1]
