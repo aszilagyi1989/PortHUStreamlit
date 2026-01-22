@@ -84,8 +84,8 @@ async def run_playwright():
          # peldanyszam = page1.get_by_role("link", name = line).count()
           await page.get_by_role("link", name = line).nth(0).click(force = True)
         popup_page = await popup_info.value
-        await popup_page.wait_for_load_state("networkidle")
-        # await popup_page.wait_for_timeout(2000)
+        # await popup_page.wait_for_load_state("networkidle")
+        await popup_page.wait_for_timeout(2000)
         data = await popup_page.locator("body").inner_text()
         
         try:
