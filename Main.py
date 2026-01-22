@@ -115,7 +115,7 @@ async def run_playwright():
     # content = await page.title()
     await browser.close()
     
-    return "" # lines # koncertek # all_page_text # content
+    return koncertek # lines # koncertek # all_page_text # content
 
 selected = option_menu(None, ['Koncertek'], menu_icon = 'cast', default_index = 0, orientation = 'horizontal')
 
