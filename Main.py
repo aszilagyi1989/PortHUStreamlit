@@ -63,22 +63,26 @@ async def run_playwright():
     koncert = False
     name = ""
     # print(lines)
-    for line in lines:
-      if koncert == True and line != name and line != "JEGY" and line != "Ringató":
-        await page.get_by_role("link", name = line).nth(0).click(force = True)
-        await page.wait_for_timeout(2000)
-        all_page_text = await page.locator("body").inner_text()
-        print(all_page_text)
-        koncertek = all_page_text
-        break
-        # all_page_text = all_page_text.split("Címlapon")[0] 
-        # all_page_text = all_page_text.split("MEGOSZTOM")[1]
-        await page.go_back()
-      
-      if line == "KONCERT":
-        koncert = True
-      else:
-        koncert = False
+    
+    
+    # for line in lines:
+    #   if koncert == True and line != name and line != "JEGY" and line != "Ringató":
+    #     await page.get_by_role("link", name = line).nth(0).click(force = True)
+    #     await page.wait_for_timeout(2000)
+    #     all_page_text = await page.locator("body").inner_text()
+    #     print(all_page_text)
+    #     koncertek = all_page_text
+    #     break
+    #     # all_page_text = all_page_text.split("Címlapon")[0] 
+    #     # all_page_text = all_page_text.split("MEGOSZTOM")[1]
+    #     await page.go_back()
+    #   
+    #   if line == "KONCERT":
+    #     koncert = True
+    #   else:
+    #     koncert = False
+        
+        
         # locator = page.get_by_role("link", name = line).nth(0)
         # await locator.wait_for(state = "attached")
         # async with page.expect_popup() as popup_info:
