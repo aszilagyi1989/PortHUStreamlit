@@ -39,7 +39,7 @@ async def run_playwright():
     # await page.get_by_role("link", name = "Koncert", exact = True).click()
     # await page.wait_for_load_state("networkidle")
     await page.wait_for_timeout(2000)
-    await page.get_by_text("találat megjelenítése").click()
+    await page.get_by_text("találat megjelenítése").click(force = True)
     await page.wait_for_timeout(2000)
     # await page.wait_for_load_state("networkidle")
     
