@@ -34,9 +34,9 @@ async def run_playwright():
     await page.goto("https://port.hu/programkereso/zene")
     # await page.wait_for_load_state("networkidle")
     # await page.wait_for_timeout(2000)
-    # await page.get_by_role("button", name = "ELFOGADOM").click()
-    # await page.get_by_role("button", name = "Értem!").click()
-    # await page.get_by_role("link", name = "Koncert", exact = True).click()
+    # await page.get_by_role("button", name = "ELFOGADOM").click(force = True)
+    # await page.get_by_role("button", name = "Értem!").click(force = True)
+    # await page.get_by_role("link", name = "Koncert", exact = True).click(force = True)
     # await page.wait_for_load_state("networkidle")
     await page.wait_for_timeout(2000)
     await page.get_by_text("találat megjelenítése").click(force = True)
@@ -67,7 +67,7 @@ async def run_playwright():
           print(line)
           # peldanyszam = page1.get_by_role("link", name = line).count()
           name = line
-          await page.get_by_role("link", name = line).nth(0).click()
+          await page.get_by_role("link", name = line).nth(0).click(force = True)
           # print(page1_info.value)
           popup_page = await popup_info.value
           # await popup_page.wait_for_load_state("networkidle")
