@@ -60,19 +60,19 @@ async def run_playwright():
     koncert = False
     name = ""
     
-    # await page.screenshot(path = "debug.png")
-    # st.image("debug.png")
+    await page.screenshot(path = "debug.png")
+    st.image("debug.png")
     await page.get_by_role("button", name = "CONFIRM").click(force = True)
-    # await page.screenshot(path = "debug2.png")
-    # st.image("debug2.png")
+    await page.screenshot(path = "debug2.png")
+    st.image("debug2.png")
     await page.wait_for_timeout(2000)
     await page.click('button:has-text("OK")')
-    # await page.screenshot(path = "debug3.png")
-    # st.image("debug3.png")
+    await page.screenshot(path = "debug3.png")
+    st.image("debug3.png")
     await page.wait_for_timeout(2000)
     await page.get_by_role("button", name = "Értem!").click(force = True)
-    # await page.screenshot(path = "debug4.png")
-    # st.image("debug4.png")
+    await page.screenshot(path = "debug4.png")
+    st.image("debug4.png")
     
     for line in lines:
       
