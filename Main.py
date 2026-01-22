@@ -59,7 +59,7 @@ async def run_playwright():
       
     koncertek = str(all_page_text).split("Hozzám legközelebb")[1]
     # print(koncertek)
-    lines = koncertek.splitlines()
+    lines = str(koncertek).splitlines()
     koncert = False
     name = ""
     # print(lines)
