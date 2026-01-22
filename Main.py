@@ -35,12 +35,13 @@ async def run_playwright():
         
     page = await context.new_page() # browser.
     await page.goto("https://port.hu/programkereso/zene") # 
-    # await page.wait_for_load_state("networkidle")
+    await page.wait_for_load_state("networkidle")
     # await page.wait_for_timeout(3000)
     # await page.get_by_role("button", name = "ELFOGADOM").click(force = True)
     # await page.get_by_role("button", name = "Értem!").click(force = True)
     # await page.get_by_role("link", name = "Koncert", exact = True).click(force = True)
     await page.get_by_text("találat megjelenítése").click(force = True)
+    await page.wait_for_load_state("networkidle")
     # await page.wait_for_timeout(2000)
     
     all_page_text = await page.locator("body").inner_text()
@@ -83,18 +84,19 @@ async def run_playwright():
          # peldanyszam = page1.get_by_role("link", name = line).count()
           await page.get_by_role("link", name = line).nth(0).click(force = True)
         popup_page = await popup_info.value
+        await popup_page.wait_for_load_state("networkidle")
         # await popup_page.wait_for_timeout(2000)
         data = await popup_page.locator("body").inner_text()
         
         try:
           data = str(data).split("Címlapon")[0]
           data = str(data).split("MEGOSZTOM")[1]
+          st.info(data)
         except Exception as e:
           data = await popup_page.locator("body").inner_text()
-          st.write(f"Hiba történt: {e}")
-        
-        st.write(data)
-        # break
+          st.error(f"Hiba történt: {e}")
+          st.error(data)
+      # break
 
       if line == "KONCERT":
         koncert = True
