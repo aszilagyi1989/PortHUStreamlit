@@ -1,6 +1,7 @@
 altair
 asyncio
 chromadb
+geopy.geocoders
 langchain
 langchain-chroma
 langchain-openai

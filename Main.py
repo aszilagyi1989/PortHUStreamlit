@@ -14,6 +14,7 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_core.runnables import RunnablePassthrough
 from pydantic import BaseModel, Field
 from typing import Optional, List
+from geopy.geocoders import Nominatim
 # import nest_asyncio
 # nest_asyncio.apply()
 import subprocess
@@ -93,16 +94,22 @@ async def run_playwright():
       if koncert == True and line != name: # and line != "Ringató"
         name = line
         # await page.screenshot(path = "debug.png")
-        async with page.expect_popup() as popup_info:
-         # peldanyszam = page1.get_by_role("link", name = line).count()
-          await page.get_by_role("link", name = line).nth(0).click(force = True)
+        try:
+          async with page.expect_popup() as popup_info:
+            # peldanyszam = page1.get_by_role("link", name = line).count()
+            await page.get_by_role("link", name = line).nth(0).click(force = True)
+        except Exception as e:
+          st.error(f"Hiba történt: {e}. A következő esemény betöltésénél: {line}")
+          koncert = False
+          continue
+          
         popup_page = await popup_info.value
         # await popup_page.wait_for_load_state("networkidle")
         await popup_page.wait_for_timeout(2000)
         try:
           data = await popup_page.locator("body").inner_text()
         except Exception as e:
-          st.error(f"Hiba történt: {e}. A következő eseménynél: {line}")
+          st.error(f"Hiba történt: {e}. A következő esemény body-jánál: {line}")
           koncert = False
           continue
         
@@ -112,7 +119,7 @@ async def run_playwright():
           st.info(data)
         except Exception as e:
           data = await popup_page.locator("body").inner_text()
-          st.error(f"Hiba történt: {e}")
+          st.error(f"Hiba történt: {e}. A következő esemény szövegénél: {line}")
           st.error(data)
       # break
 
