@@ -83,7 +83,7 @@ def search(text):
               "If you do not know the value of an attribute asked to extract, "
               "return Nincs információ instead of NULL for the attribute's value.",
           ),
-          ("human", "{text}"),
+          ("human", text), # "{text}"
       ]
   )
   
