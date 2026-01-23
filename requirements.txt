@@ -2,6 +2,7 @@ altair
 asyncio
 langchain
 langchain-openai
+langchain-text-splitters
 nest_asyncio
 pandas
 playwright
