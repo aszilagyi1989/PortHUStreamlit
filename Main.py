@@ -58,12 +58,12 @@ def search(text):
   retriever = vectorstore.as_retriever(search_type = "similarity")
   
   class Event(BaseModel):
-    address: Optional[str] = Field(default = "Nincs információ", description = "The address of the event")
-    date: Optional[str] = Field(default = "Nincs információ", description = "The date of the event")
-    location: Optional[str] = Field(default = "Nincs információ", description = "The location of the event")
-    price: Optional[str] = Field(default = "Nincs információ", description = "The aprice of the event")
-    decription: Optional[str] = Field(default = "Nincs információ", description = "The description of the event")
-    link: Optional[str] = Field(default = "Nincs információ", description = "The hyperlink of the event")
+    Cím: Optional[str] = Field(default = "Nincs információ", description = "The address of the event")
+    Dátum: Optional[str] = Field(default = "Nincs információ", description = "The date of the event")
+    Helyszín: Optional[str] = Field(default = "Nincs információ", description = "The location of the event")
+    Ár: Optional[str] = Field(default = "Nincs információ", description = "The aprice of the event")
+    Leírás: Optional[str] = Field(default = "Nincs információ", description = "The description of the event")
+    Link: Optional[str] = Field(default = "Nincs információ", description = "The hyperlink of the event")
   
   prompt = ChatPromptTemplate.from_messages(
       [
@@ -93,7 +93,7 @@ def search(text):
   
   reduced_text = " ".join(relevant_chunks)
   result = runnable.invoke({"text": reduced_text})
-  st.write(type(result))
+  # st.write(type(result))
   st.write(result)
   
   return result
@@ -187,7 +187,7 @@ async def run_playwright():
           data = str(data).split("MEGOSZTOM")[1]
           # st.info(data)
           findings = search(data)
-          st.info(findings)
+          # st.info(findings)
         except Exception as e:
           data = await popup_page.locator("body").inner_text()
           st.error(f"Hiba történt: {e}. A következő esemény szövegénél: {line}")
