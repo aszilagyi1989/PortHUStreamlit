@@ -7,10 +7,15 @@ import nest_asyncio
 nest_asyncio.apply()
 import sys
 import time
-from langchain_community.document_loaders import PyPDFLoader
+from langchain_openai import ChatOpenAI
+from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_chroma import Chroma
 from langchain_openai import OpenAIEmbeddings
-from langchain_core.vectorstores import InMemoryVectorStore
+from langchain_core.runnables import RunnablePassthrough
+from pydantic import BaseModel, Field
+from typing import Optional, List
 import subprocess
 subprocess.run(["playwright", "install", "chromium"])
 
