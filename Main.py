@@ -89,8 +89,12 @@ async def run_playwright():
         continue
 
       if koncert == True and line != name: # and line != "Ringató"
+        
+        if "|" in line:
+          line = str(line).split("|")[0]
+          st.write(line)
+          
         name = line
-        # await page.screenshot(path = "debug.png")
         try:
           async with page.expect_popup() as popup_info:
             # peldanyszam = page1.get_by_role("link", name = line).count()
