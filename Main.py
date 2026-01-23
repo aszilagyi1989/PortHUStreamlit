@@ -39,6 +39,23 @@ model = ChatOpenAI(model = "gpt-5.2") # OPENAI_MODEL
 
 st.title('Budapesti programok')
 
+class Event(BaseModel):
+  Cím: Optional[str] = Field(default = "Nincs információ", description = "The address of the event")
+  Dátum: Optional[str] = Field(default = "Nincs információ", description = "The date of the event")
+  Helyszín: Optional[str] = Field(default = "Nincs információ", description = "The location of the event")
+  Ár: Optional[str] = Field(default = "Nincs információ", description = "The price of the event")
+  Leírás: Optional[str] = Field(default = "Nincs információ", description = "The description of the event")
+  Link: Optional[str] = Field(default = "Nincs információ", description = "The hyperlink of the event")
+
+queries = [
+      f"Address of the event",
+      f"Date of the event",
+      f"Location of the event",
+      f"Price of the event",
+      f"Description of the event",
+      f"Link of the event",
+]
+
 def get_relevant_chunks(retriever, queries: List[str]) -> List[str]:
   retrieved_texts = []
   for query in queries:
@@ -57,13 +74,7 @@ def search(text):
   vectorstore = Chroma.from_documents(splits, embedding = OpenAIEmbeddings())
   retriever = vectorstore.as_retriever(search_type = "similarity")
   
-  class Event(BaseModel):
-    Cím: Optional[str] = Field(default = "Nincs információ", description = "The address of the event")
-    Dátum: Optional[str] = Field(default = "Nincs információ", description = "The date of the event")
-    Helyszín: Optional[str] = Field(default = "Nincs információ", description = "The location of the event")
-    Ár: Optional[str] = Field(default = "Nincs információ", description = "The price of the event")
-    Leírás: Optional[str] = Field(default = "Nincs információ", description = "The description of the event")
-    Link: Optional[str] = Field(default = "Nincs információ", description = "The hyperlink of the event")
+  
   
   prompt = ChatPromptTemplate.from_messages(
       [
@@ -80,14 +91,7 @@ def search(text):
   
   runnable = prompt | model.with_structured_output(schema = Event)
       
-  queries = [
-      f"Address of the event",
-      f"Date of the event",
-      f"Location of the event",
-      f"Price of the event",
-      f"Description of the event",
-      f"Link of the event",
-  ]
+  
   
   relevant_chunks = get_relevant_chunks(retriever, queries)
   
@@ -117,13 +121,13 @@ async def run_playwright():
     await page.wait_for_timeout(1500)
     await page.get_by_role("button", name = "Értem!").click(force = True)
     await page.wait_for_timeout(1500)
-    await page.screenshot(path = "debug0.png")
-    st.image("debug0.png")
+    # await page.screenshot(path = "debug0.png")
+    # st.image("debug0.png")
     
     # await page.get_by_role("button", name = "ELFOGADOM").click(force = True)
     # await page.get_by_role("link", name = "Koncert", exact = True).click(force = True)
     await page.get_by_text("találat megjelenítése").click(force = True)
-    await page.wait_for_timeout(2000)
+    await page.wait_for_timeout(1500)
     
     all_page_text = await page.locator("body").inner_text()
     
