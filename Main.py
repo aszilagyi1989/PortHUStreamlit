@@ -69,12 +69,10 @@ def search(text):
   doc = Document(page_content = text)
 
   text_splitter = RecursiveCharacterTextSplitter(chunk_size = 1000)
-  splits = text_splitter.split_documents([doc])
+  splits = str(text_splitter).split_documents([doc])
   
   vectorstore = Chroma.from_documents(splits, embedding = OpenAIEmbeddings())
   retriever = vectorstore.as_retriever(search_type = "similarity")
-  
-  
   
   prompt = ChatPromptTemplate.from_messages(
       [
@@ -91,8 +89,6 @@ def search(text):
   
   runnable = prompt | model.with_structured_output(schema = Event)
       
-  
-  
   relevant_chunks = get_relevant_chunks(retriever, queries)
   
   reduced_text = str(" ").join(relevant_chunks)
@@ -100,7 +96,7 @@ def search(text):
   # st.write(type(result))
   st.write(result)
   
-  return result
+  # return result
   
 
 async def run_playwright():
@@ -166,7 +162,7 @@ async def run_playwright():
         try:
           async with page.expect_popup() as popup_info:
             # peldanyszam = page1.get_by_role("link", name = line).count()
-            await page.wait_for_timeout(2000)
+            await page.wait_for_timeout(1500)
             await page.get_by_role("link", name = line).nth(0).click(force = True)
         except Exception as e:
           st.error(f"Hiba történt: {e}. A következő esemény betöltésénél: {line}")
@@ -174,28 +170,28 @@ async def run_playwright():
           continue
           
         popup_page = await popup_info.value
-        await popup_page.wait_for_timeout(2000)
+        await popup_page.wait_for_timeout(1500)
         try:
           data = await popup_page.locator("body").inner_text()
         except Exception as e:
           st.error(f"Hiba történt: {e}. A következő esemény body-jánál: {line}")
           koncert = False
-          await popup_page.screenshot(path = "debug.png")
-          st.image("debug.png")
+          # await popup_page.screenshot(path = "debug.png")
+          # st.image("debug.png")
           continue
         
         try:
           data = str(data).split("Címlapon")[0]
           data = str(data).split("MEGOSZTOM")[1]
           # st.info(data)
-          findings = search(data)
+          search(data) # findings = 
           # st.info(findings)
         except Exception as e:
           data = await popup_page.locator("body").inner_text()
           st.error(f"Hiba történt: {e}. A következő esemény szövegénél: {line}")
           st.error(data)
-          await popup_page.screenshot(path = "debug2.png")
-          st.image("debug2.png")
+          # await popup_page.screenshot(path = "debug2.png")
+          # st.image("debug2.png")
       # break
 
       if line == "KONCERT":
