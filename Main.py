@@ -107,15 +107,20 @@ async def run_playwright():
     )
     
     context.set_default_timeout(10000)
+    
     page = await context.new_page() # browser.
     await page.goto("https://port.hu/programkereso/zene") # 
-    await page.wait_for_timeout(2000)
+    await page.wait_for_timeout(1500)
     await page.get_by_role("button", name = "CONFIRM").click(force = True)
-    await page.wait_for_timeout(2000)
+    await page.wait_for_timeout(1500)
+    await page.click('button:has-text("OK")')
+    await page.wait_for_timeout(1500)
+    await page.get_by_role("button", name = "Értem!").click(force = True)
+    await page.wait_for_timeout(1500)
     await page.screenshot(path = "debug0.png")
     st.image("debug0.png")
+    
     # await page.get_by_role("button", name = "ELFOGADOM").click(force = True)
-    # await page.get_by_role("button", name = "Értem!").click(force = True)
     # await page.get_by_role("link", name = "Koncert", exact = True).click(force = True)
     await page.get_by_text("találat megjelenítése").click(force = True)
     await page.wait_for_timeout(2000)
@@ -135,17 +140,6 @@ async def run_playwright():
     lines = str(koncertek).splitlines()
     koncert = False
     name = ""
-    
-    # await page.screenshot(path = "debug.png")
-    # st.image("debug.png")
-    # await page.get_by_role("button", name = "CONFIRM").click(force = True)
-    # await page.wait_for_timeout(2000)
-    
-    await page.click('button:has-text("OK")')
-    await page.wait_for_timeout(2000)
-    
-    await page.get_by_role("button", name = "Értem!").click(force = True)
-    await page.wait_for_timeout(2000)
     
     for line in lines:
       
