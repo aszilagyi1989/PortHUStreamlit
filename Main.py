@@ -35,7 +35,7 @@ st.set_page_config(
                 'About': 'This webapplication makes you able to scrape data from port.hu website with PlayWright.'}
 )
 
-model = ChatOpenAI(model = OPENAI_MODEL)
+model = ChatOpenAI(model = "gpt-5.2") # OPENAI_MODEL
 
 st.title('Budapesti programok')
 
