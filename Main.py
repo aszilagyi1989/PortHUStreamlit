@@ -118,7 +118,7 @@ async def run_playwright():
         except Exception as e:
           st.error(f"Hiba történt: {e}. A következő esemény body-jánál: {line}")
           koncert = False
-          await page.screenshot(path = "debug.png")
+          await popup_page.screenshot(path = "debug.png")
           st.image("debug.png")
           continue
         
@@ -130,7 +130,7 @@ async def run_playwright():
           data = await popup_page.locator("body").inner_text()
           st.error(f"Hiba történt: {e}. A következő esemény szövegénél: {line}")
           st.error(data)
-          await page.screenshot(path = "debug2.png")
+          await popup_page.screenshot(path = "debug2.png")
           st.image("debug2.png")
       # break
 
