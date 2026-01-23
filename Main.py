@@ -15,6 +15,7 @@ from langchain_core.runnables import RunnablePassthrough
 from pydantic import BaseModel, Field
 from typing import Optional, List
 from geopy.geocoders import Nominatim
+import folium
 # import nest_asyncio
 # nest_asyncio.apply()
 import subprocess
@@ -111,6 +112,7 @@ async def run_playwright():
         except Exception as e:
           st.error(f"Hiba történt: {e}. A következő esemény body-jánál: {line}")
           koncert = False
+          await popup_page.wait_for_timeout(2000)
           continue
         
         try:
@@ -121,6 +123,7 @@ async def run_playwright():
           data = await popup_page.locator("body").inner_text()
           st.error(f"Hiba történt: {e}. A következő esemény szövegénél: {line}")
           st.error(data)
+          await popup_page.wait_for_timeout(2000)
       # break
 
       if line == "KONCERT":
