@@ -92,6 +92,7 @@ async def run_playwright():
           data = await popup_page.locator("body").inner_text()
         except Exception as e:
           st.error(f"Hiba történt: {e}. A következő eseménynél: {line}")
+          koncert = False
           continue
         
         try:
