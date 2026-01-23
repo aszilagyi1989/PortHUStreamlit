@@ -65,7 +65,7 @@ def get_relevant_chunks(retriever, queries: List[str]) -> List[str]:
   return list(set(retrieved_texts))
 
 def search(text):
-  st.write(text)
+  # st.write(text)
   doc = Document(page_content = text)
 
   text_splitter = RecursiveCharacterTextSplitter(chunk_size = 1000)
@@ -165,7 +165,7 @@ async def run_playwright():
             await page.wait_for_timeout(1000)
             await page.get_by_role("link", name = line).nth(0).click(force = True)
         except Exception as e:
-          st.error(f"Hiba történt: {e}. A következő esemény betöltésénél: {line}")
+          # st.error(f"Hiba történt: {e}. A következő esemény betöltésénél: {line}")
           koncert = False
           continue
           
@@ -174,7 +174,7 @@ async def run_playwright():
         try:
           data = await popup_page.locator("body").inner_text()
         except Exception as e:
-          st.error(f"Hiba történt: {e}. A következő esemény body-jánál: {line}")
+          # st.error(f"Hiba történt: {e}. A következő esemény body-jánál: {line}")
           koncert = False
           # await popup_page.screenshot(path = "debug.png")
           # st.image("debug.png")
@@ -187,9 +187,10 @@ async def run_playwright():
           search(data) # findings = 
           # st.info(findings)
         except Exception as e:
-          data = await popup_page.locator("body").inner_text()
-          st.error(f"Hiba történt: {e}. A következő esemény szövegénél: {line}")
-          st.error(data)
+          pass
+          # data = await popup_page.locator("body").inner_text()
+          # st.error(f"Hiba történt: {e}. A következő esemény szövegénél: {line}")
+          # st.error(data)
           # await popup_page.screenshot(path = "debug2.png")
           # st.image("debug2.png")
       # break
