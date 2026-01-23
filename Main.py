@@ -35,7 +35,7 @@ st.set_page_config(
                 'About': 'This webapplication makes you able to scrape data from port.hu website with PlayWright.'}
 )
 
-model = ChatOpenAI(model = "gpt-5.2")
+model = ChatOpenAI(model = OPENAI_MODEL)
 
 st.title('Budapesti programok')
 
@@ -76,8 +76,10 @@ async def run_playwright():
     # st.image("debug.png")
     await page.get_by_role("button", name = "CONFIRM").click(force = True)
     await page.wait_for_timeout(2000)
+    
     await page.click('button:has-text("OK")')
     await page.wait_for_timeout(2000)
+    
     await page.get_by_role("button", name = "Értem!").click(force = True)
     await page.wait_for_timeout(2000)
     
@@ -92,6 +94,7 @@ async def run_playwright():
         try:
           async with page.expect_popup() as popup_info:
             # peldanyszam = page1.get_by_role("link", name = line).count()
+            await page.wait_for_timeout(2000)
             await page.get_by_role("link", name = line).nth(0).click(force = True)
         except Exception as e:
           st.error(f"Hiba történt: {e}. A következő esemény betöltésénél: {line}")
@@ -105,7 +108,7 @@ async def run_playwright():
         except Exception as e:
           st.error(f"Hiba történt: {e}. A következő esemény body-jánál: {line}")
           koncert = False
-          await popup_page.wait_for_timeout(2000)
+          # await popup_page.wait_for_timeout(2000)
           continue
         
         try:
@@ -116,7 +119,7 @@ async def run_playwright():
           data = await popup_page.locator("body").inner_text()
           st.error(f"Hiba történt: {e}. A következő esemény szövegénél: {line}")
           st.error(data)
-          await popup_page.wait_for_timeout(2000)
+          # await popup_page.wait_for_timeout(2000)
       # break
 
       if line == "KONCERT":
