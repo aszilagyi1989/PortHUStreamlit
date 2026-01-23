@@ -95,6 +95,11 @@ async def run_playwright():
           line = line[:-2]
           st.write(line)
           
+        if "/" in line:
+          line = str(line).split("/")[0]
+          line = line[:-2]
+          st.write(line)
+          
         name = line
         try:
           async with page.expect_popup() as popup_info:
