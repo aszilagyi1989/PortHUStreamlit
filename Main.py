@@ -72,7 +72,7 @@ def search(text):
               "You are an expert extraction algorithm. "
               "Only extract relevant information from the text. "
               "If you do not know the value of an attribute asked to extract, "
-              "return null for the attribute's value.",
+              "return Nincs információ for the attribute's value.",
           ),
           ("human", "{text}"),
       ]
@@ -94,6 +94,8 @@ def search(text):
   reduced_text = " ".join(relevant_chunks)
   result = runnable.invoke({"text": reduced_text})
   st.write(result)
+  
+  return result
   
 
 async def run_playwright():
