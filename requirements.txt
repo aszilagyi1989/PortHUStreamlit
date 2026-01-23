@@ -1,6 +1,8 @@
 altair
 asyncio
+chromadb
 langchain
+langchain-chroma
 langchain-openai
 langchain-text-splitters
 nest_asyncio
