@@ -72,7 +72,7 @@ def search(text):
               "You are an expert extraction algorithm. "
               "Only extract relevant information from the text. "
               "If you do not know the value of an attribute asked to extract, "
-              "return Nincs információ for the attribute's value.",
+              "return Nincs információ instead of NULL for the attribute's value.",
           ),
           ("human", "{text}"),
       ]
@@ -91,7 +91,7 @@ def search(text):
   
   relevant_chunks = get_relevant_chunks(retriever, queries)
   
-  reduced_text = " ".join(relevant_chunks)
+  reduced_text = str(" ").join(relevant_chunks)
   result = runnable.invoke({"text": reduced_text})
   # st.write(type(result))
   st.write(result)
@@ -110,6 +110,8 @@ async def run_playwright():
     page = await context.new_page() # browser.
     await page.goto("https://port.hu/programkereso/zene") # 
     await page.wait_for_timeout(2000)
+    await page.screenshot(path = "debug0.png")
+    st.image("debug0.png")
     # await page.get_by_role("button", name = "ELFOGADOM").click(force = True)
     # await page.get_by_role("button", name = "Értem!").click(force = True)
     # await page.get_by_role("link", name = "Koncert", exact = True).click(force = True)
