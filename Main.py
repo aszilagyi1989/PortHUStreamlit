@@ -90,15 +90,15 @@ async def run_playwright():
 
       if koncert == True and line != name: # and line != "Ringató"
         
-        if "|" in line:
-          line = str(line).split("|")[0]
-          line = line[:-2]
-          st.write(line)
-          
-        if "/" in line:
-          line = str(line).split("/")[0]
-          line = line[:-2]
-          st.write(line)
+        # if "|" in line:
+        #   line = str(line).split("|")[0]
+        #   line = line[:-2]
+        #   st.write(line)
+        #   
+        # if "/" in line:
+        #   line = str(line).split("/")[0]
+        #   line = line[:-2]
+        #   st.write(line)
           
         name = line
         try:
@@ -118,7 +118,8 @@ async def run_playwright():
         except Exception as e:
           st.error(f"Hiba történt: {e}. A következő esemény body-jánál: {line}")
           koncert = False
-          # await popup_page.wait_for_timeout(2000)
+          await page.screenshot(path = "debug.png")
+          st.image("debug.png")
           continue
         
         try:
@@ -129,7 +130,8 @@ async def run_playwright():
           data = await popup_page.locator("body").inner_text()
           st.error(f"Hiba történt: {e}. A következő esemény szövegénél: {line}")
           st.error(data)
-          # await popup_page.wait_for_timeout(2000)
+          await page.screenshot(path = "debug2.png")
+          st.image("debug2.png")
       # break
 
       if line == "KONCERT":
@@ -150,3 +152,4 @@ if selected == 'Koncertek':
   st.write(result)
   
   # page.get_by_role("button", name = "2").click()
+  # page.get_by_text("Hirdetés átugrása").click()
