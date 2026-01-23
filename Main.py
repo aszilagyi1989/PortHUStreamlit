@@ -65,7 +65,7 @@ def get_relevant_chunks(retriever, queries: List[str]) -> List[str]:
   return list(set(retrieved_texts))
 
 def search(text):
-  
+  st.write(text)
   doc = Document(page_content = text)
 
   text_splitter = RecursiveCharacterTextSplitter(chunk_size = 1000)
@@ -183,8 +183,8 @@ async def run_playwright():
         try:
           data = str(data).split("Címlapon")[0]
           data = str(data).split("MEGOSZTOM")[1]
-          st.info(data)
-          # search(data) # findings = 
+          # st.info(data)
+          search(data) # findings = 
           # st.info(findings)
         except Exception as e:
           data = await popup_page.locator("body").inner_text()
