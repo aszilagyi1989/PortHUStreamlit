@@ -3,8 +3,6 @@ from streamlit_option_menu import option_menu
 import asyncio
 from playwright.async_api import Playwright, async_playwright, expect
 import pandas as pd
-import nest_asyncio
-nest_asyncio.apply()
 import sys
 import time
 from langchain_openai import ChatOpenAI
@@ -16,6 +14,8 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_core.runnables import RunnablePassthrough
 from pydantic import BaseModel, Field
 from typing import Optional, List
+import nest_asyncio
+nest_asyncio.apply()
 import subprocess
 subprocess.run(["playwright", "install", "chromium"])
 
