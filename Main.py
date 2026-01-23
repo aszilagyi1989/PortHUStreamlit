@@ -110,20 +110,20 @@ async def run_playwright():
     
     page = await context.new_page() # browser.
     await page.goto("https://port.hu/programkereso/zene") # 
-    await page.wait_for_timeout(1500)
+    await page.wait_for_timeout(1000)
     await page.get_by_role("button", name = "CONFIRM").click(force = True)
-    await page.wait_for_timeout(1500)
+    await page.wait_for_timeout(1000)
     await page.click('button:has-text("OK")')
-    await page.wait_for_timeout(1500)
+    await page.wait_for_timeout(1000)
     await page.get_by_role("button", name = "Értem!").click(force = True)
-    await page.wait_for_timeout(1500)
+    await page.wait_for_timeout(1000)
     # await page.screenshot(path = "debug0.png")
     # st.image("debug0.png")
     
     # await page.get_by_role("button", name = "ELFOGADOM").click(force = True)
     # await page.get_by_role("link", name = "Koncert", exact = True).click(force = True)
     await page.get_by_text("találat megjelenítése").click(force = True)
-    await page.wait_for_timeout(1500)
+    await page.wait_for_timeout(1000)
     
     all_page_text = await page.locator("body").inner_text()
     
@@ -162,7 +162,7 @@ async def run_playwright():
         try:
           async with page.expect_popup() as popup_info:
             # peldanyszam = page1.get_by_role("link", name = line).count()
-            await page.wait_for_timeout(1500)
+            await page.wait_for_timeout(1000)
             await page.get_by_role("link", name = line).nth(0).click(force = True)
         except Exception as e:
           st.error(f"Hiba történt: {e}. A következő esemény betöltésénél: {line}")
@@ -170,7 +170,7 @@ async def run_playwright():
           continue
           
         popup_page = await popup_info.value
-        await popup_page.wait_for_timeout(1500)
+        await popup_page.wait_for_timeout(1000)
         try:
           data = await popup_page.locator("body").inner_text()
         except Exception as e:
@@ -183,8 +183,8 @@ async def run_playwright():
         try:
           data = str(data).split("Címlapon")[0]
           data = str(data).split("MEGOSZTOM")[1]
-          # st.info(data)
-          search(data) # findings = 
+          st.info(data)
+          # search(data) # findings = 
           # st.info(findings)
         except Exception as e:
           data = await popup_page.locator("body").inner_text()
