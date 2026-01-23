@@ -61,7 +61,7 @@ def search(text):
     Cím: Optional[str] = Field(default = "Nincs információ", description = "The address of the event")
     Dátum: Optional[str] = Field(default = "Nincs információ", description = "The date of the event")
     Helyszín: Optional[str] = Field(default = "Nincs információ", description = "The location of the event")
-    Ár: Optional[str] = Field(default = "Nincs információ", description = "The aprice of the event")
+    Ár: Optional[str] = Field(default = "Nincs információ", description = "The price of the event")
     Leírás: Optional[str] = Field(default = "Nincs információ", description = "The description of the event")
     Link: Optional[str] = Field(default = "Nincs információ", description = "The hyperlink of the event")
   
