@@ -110,6 +110,8 @@ async def run_playwright():
     page = await context.new_page() # browser.
     await page.goto("https://port.hu/programkereso/zene") # 
     await page.wait_for_timeout(2000)
+    await page.get_by_role("button", name = "CONFIRM").click(force = True)
+    await page.wait_for_timeout(2000)
     await page.screenshot(path = "debug0.png")
     st.image("debug0.png")
     # await page.get_by_role("button", name = "ELFOGADOM").click(force = True)
@@ -136,8 +138,8 @@ async def run_playwright():
     
     # await page.screenshot(path = "debug.png")
     # st.image("debug.png")
-    await page.get_by_role("button", name = "CONFIRM").click(force = True)
-    await page.wait_for_timeout(2000)
+    # await page.get_by_role("button", name = "CONFIRM").click(force = True)
+    # await page.wait_for_timeout(2000)
     
     await page.click('button:has-text("OK")')
     await page.wait_for_timeout(2000)
