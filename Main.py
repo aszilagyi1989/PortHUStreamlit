@@ -69,7 +69,7 @@ def search(text):
   doc = Document(page_content = text)
 
   text_splitter = RecursiveCharacterTextSplitter(chunk_size = 1000)
-  splits = str(text_splitter).split_documents([doc])
+  splits = text_splitter.split_documents([doc])
   
   vectorstore = Chroma.from_documents(splits, embedding = OpenAIEmbeddings())
   retriever = vectorstore.as_retriever(search_type = "similarity")
