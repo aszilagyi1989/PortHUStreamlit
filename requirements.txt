@@ -1,7 +1,8 @@
 altair
 asyncio
-pandas
+langchain
 nest_asyncio
+pandas
 playwright
 streamlit>=1.23.0
 streamlit-option-menu

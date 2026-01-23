@@ -7,6 +7,10 @@ import nest_asyncio
 nest_asyncio.apply()
 import sys
 import time
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_openai import OpenAIEmbeddings
+from langchain_core.vectorstores import InMemoryVectorStore
 import subprocess
 subprocess.run(["playwright", "install", "chromium"])
 
@@ -32,7 +36,8 @@ async def run_playwright():
     context = await browser.new_context(
             user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         )
-        
+    
+    context.set_default_timeout(5000)
     page = await context.new_page() # browser.
     await page.goto("https://port.hu/programkereso/zene") # 
     # await page.wait_for_load_state("networkidle")
@@ -60,19 +65,20 @@ async def run_playwright():
     koncert = False
     name = ""
     
-    await page.screenshot(path = "debug.png")
-    st.image("debug.png")
+    # await page.screenshot(path = "debug.png")
+    # st.image("debug.png")
     await page.get_by_role("button", name = "CONFIRM").click(force = True)
-    await page.screenshot(path = "debug2.png")
-    st.image("debug2.png")
+    # await page.screenshot(path = "debug2.png")
+    # st.image("debug2.png")
     await page.wait_for_timeout(2000)
     await page.click('button:has-text("OK")')
-    await page.screenshot(path = "debug3.png")
-    st.image("debug3.png")
+    # await page.screenshot(path = "debug3.png")
+    # st.image("debug3.png")
     await page.wait_for_timeout(2000)
     await page.get_by_role("button", name = "Értem!").click(force = True)
-    await page.screenshot(path = "debug4.png")
-    st.image("debug4.png")
+    await page.wait_for_timeout(2000)
+    # await page.screenshot(path = "debug4.png")
+    # st.image("debug4.png")
     
     for line in lines:
       
