@@ -92,6 +92,7 @@ async def run_playwright():
         
         if "|" in line:
           line = str(line).split("|")[0]
+          line = line[:-2]
           st.write(line)
           
         name = line
