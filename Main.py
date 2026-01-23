@@ -35,25 +35,25 @@ st.set_page_config(
                 'About': 'This webapplication makes you able to scrape data from port.hu website with PlayWright.'}
 )
 
+model = ChatOpenAI(model = "gpt-5.2")
+
 st.title('Budapesti programok')
 
 async def run_playwright():
   async with async_playwright() as p:
     browser = await p.chromium.launch(headless = True) # False
     context = await browser.new_context(
-            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-        )
+      user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    )
     
     context.set_default_timeout(10000)
     page = await context.new_page() # browser.
     await page.goto("https://port.hu/programkereso/zene") # 
-    # await page.wait_for_load_state("networkidle")
     await page.wait_for_timeout(2000)
     # await page.get_by_role("button", name = "ELFOGADOM").click(force = True)
     # await page.get_by_role("button", name = "Értem!").click(force = True)
     # await page.get_by_role("link", name = "Koncert", exact = True).click(force = True)
     await page.get_by_text("találat megjelenítése").click(force = True)
-    # await page.wait_for_load_state("networkidle")
     await page.wait_for_timeout(2000)
     
     all_page_text = await page.locator("body").inner_text()
@@ -75,17 +75,11 @@ async def run_playwright():
     # await page.screenshot(path = "debug.png")
     # st.image("debug.png")
     await page.get_by_role("button", name = "CONFIRM").click(force = True)
-    # await page.screenshot(path = "debug2.png")
-    # st.image("debug2.png")
     await page.wait_for_timeout(2000)
     await page.click('button:has-text("OK")')
-    # await page.screenshot(path = "debug3.png")
-    # st.image("debug3.png")
     await page.wait_for_timeout(2000)
     await page.get_by_role("button", name = "Értem!").click(force = True)
     await page.wait_for_timeout(2000)
-    # await page.screenshot(path = "debug4.png")
-    # st.image("debug4.png")
     
     for line in lines:
       
@@ -105,7 +99,6 @@ async def run_playwright():
           continue
           
         popup_page = await popup_info.value
-        # await popup_page.wait_for_load_state("networkidle")
         await popup_page.wait_for_timeout(2000)
         try:
           data = await popup_page.locator("body").inner_text()
@@ -134,7 +127,7 @@ async def run_playwright():
     # content = await page.title()
     await browser.close()
     
-    return "" # koncertek # result # str(all_page_text).split("Hozzám legközelebb")[1] # koncertek # lines # all_page_text # content
+    return ""
 
 selected = option_menu(None, ['Koncertek'], menu_icon = 'cast', default_index = 0, orientation = 'horizontal')
 
