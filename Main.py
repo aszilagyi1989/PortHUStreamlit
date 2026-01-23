@@ -39,6 +39,63 @@ model = ChatOpenAI(model = "gpt-5.2") # OPENAI_MODEL
 
 st.title('Budapesti programok')
 
+def get_relevant_chunks(retriever, queries: List[str]) -> List[str]:
+  retrieved_texts = []
+  for query in queries:
+    docs = retriever.invoke(query)
+    retrieved_texts.extend([doc.page_content for doc in docs])
+    
+  return list(set(retrieved_texts))
+
+def search(text):
+  
+  doc = Document(page_content = text)
+
+  text_splitter = RecursiveCharacterTextSplitter(chunk_size = 1000)
+  splits = text_splitter.split_documents([doc])
+  
+  vectorstore = Chroma.from_documents(splits, embedding = OpenAIEmbeddings())
+  retriever = vectorstore.as_retriever(search_type = "similarity")
+  
+  class Event(BaseModel):
+    address: Optional[str] = Field(default = None, description = "The address of the event")
+    date: Optional[str] = Field(default = None, description = "The date of the event")
+    location: Optional[str] = Field(default = None, description = "The location of the event")
+    price: Optional[str] = Field(default = None, description = "The aprice of the event")
+    decription: Optional[str] = Field(default = None, description = "The description of the event")
+    link: Optional[str] = Field(default = None, description = "The hyperlink of the event")
+  
+  prompt = ChatPromptTemplate.from_messages(
+      [
+          (
+              "system",
+              "You are an expert extraction algorithm. "
+              "Only extract relevant information from the text. "
+              "If you do not know the value of an attribute asked to extract, "
+              "return null for the attribute's value.",
+          ),
+          ("human", "{text}"),
+      ]
+  )
+  
+  runnable = prompt | model.with_structured_output(schema = Event)
+      
+  queries = [
+      f"Address of the event",
+      f"Date of the event",
+      f"Location of the event",
+      f"Price of the event",
+      f"Description of the event",
+      f"Link of the event",
+  ]
+  
+  relevant_chunks = get_relevant_chunks(retriever, queries)
+  
+  reduced_text = " ".join(relevant_chunks)
+  result = runnable.invoke({"text": reduced_text})
+  st.write(result)
+  
+
 async def run_playwright():
   async with async_playwright() as p:
     browser = await p.chromium.launch(headless = True) # False
@@ -125,7 +182,9 @@ async def run_playwright():
         try:
           data = str(data).split("Címlapon")[0]
           data = str(data).split("MEGOSZTOM")[1]
-          st.info(data)
+          # st.info(data)
+          findings = search(data)
+          st.info(findings)
         except Exception as e:
           data = await popup_page.locator("body").inner_text()
           st.error(f"Hiba történt: {e}. A következő esemény szövegénél: {line}")
