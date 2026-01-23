@@ -14,8 +14,8 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_core.runnables import RunnablePassthrough
 from pydantic import BaseModel, Field
 from typing import Optional, List
-import nest_asyncio
-nest_asyncio.apply()
+# import nest_asyncio
+# nest_asyncio.apply()
 import subprocess
 subprocess.run(["playwright", "install", "chromium"])
 
