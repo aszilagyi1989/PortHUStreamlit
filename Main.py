@@ -13,6 +13,7 @@ from langchain_chroma import Chroma
 from langchain_openai import OpenAIEmbeddings
 from langchain_core.runnables import RunnablePassthrough
 from pydantic import BaseModel, Field
+from pydantic_settings import BaseSettings
 from typing import Optional, List
 from geopy.geocoders import Nominatim
 import folium
@@ -40,7 +41,7 @@ st.set_page_config(
 
 model = ChatOpenAI(model = "gpt-5.2") # OPENAI_MODEL
 
-st.title('Budapesti programok')
+st.title('Budapesti programok', anchor = False, help = None)
 
 class Event(BaseModel):
   Cím: Optional[str] = Field(default = "Nincs információ", description = "The address of the event")
@@ -96,8 +97,9 @@ def search(text):
   
   reduced_text = str(" ").join(relevant_chunks)
   result = runnable.invoke({"text": reduced_text})
-  # st.write(type(result))
-  st.json(result.model_dump())
+  
+  result_df = pd.DataFrame([result.model_dump()]) # for u in users
+  st.dataframe(result_df, hide_index = True) 
   
   # return result
   
@@ -114,17 +116,24 @@ async def run_playwright():
     page = await context.new_page() # browser.
     await page.goto("https://port.hu/programkereso/zene") # 
     await page.wait_for_timeout(1000)
-    await page.get_by_role("button", name = "CONFIRM").click(force = True)
-    await page.wait_for_timeout(1000)
-    await page.click('button:has-text("OK")')
-    await page.wait_for_timeout(1000)
-    await page.get_by_role("button", name = "Értem!").click(force = True)
-    await page.wait_for_timeout(1000)
-    # await page.screenshot(path = "debug0.png")
-    # st.image("debug0.png")
     
-    # await page.get_by_role("button", name = "ELFOGADOM").click(force = True)
-    # await page.get_by_role("link", name = "Koncert", exact = True).click(force = True)
+    if sys.platform == 'linux':
+      await page.get_by_role("button", name = "CONFIRM").click(force = True)
+      await page.wait_for_timeout(1000)
+      await page.click('button:has-text("OK")')
+      await page.wait_for_timeout(1000)
+      await page.get_by_role("button", name = "Értem!").click(force = True)
+      await page.wait_for_timeout(1000)
+      # await page.screenshot(path = "debug0.png")
+      # st.image("debug0.png")
+    
+    if sys.platform == 'win32':
+      await page.get_by_role("button", name = "ELFOGADOM").click(force = True)
+      await page.wait_for_timeout(1000)
+      await page.get_by_role("button", name = "Értem!").click(force = True)
+      await page.wait_for_timeout(1000)
+      # await page.get_by_role("link", name = "Koncert", exact = True).click(force = True)
+    
     await page.get_by_text("találat megjelenítése").click(force = True)
     await page.wait_for_timeout(1000)
     
@@ -221,8 +230,7 @@ selected = option_menu(None, ['Koncertek'], menu_icon = 'cast', default_index = 
 
 if selected == 'Koncertek':
   # st.write(sys.platform)
-  result = asyncio.run(run_playwright())
-  st.write(result)
+  result = asyncio.run(run_playwright()) #  
   
   # page.get_by_role("button", name = "2").click()
   # page.get_by_text("Hirdetés átugrása").click()

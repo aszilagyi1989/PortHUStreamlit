@@ -11,6 +11,7 @@ nest_asyncio
 pandas
 playwright
 pydantic
+pydantic-settings
 streamlit==1.53.0
 streamlit-option-menu
 typing
