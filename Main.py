@@ -25,6 +25,9 @@ if sys.platform == 'win32':
   asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
   loop = asyncio.new_event_loop()
   asyncio.set_event_loop(loop)
+  open = False
+elif sys.platform == 'linux':
+  open = True
 
 st.set_page_config(
   layout = 'wide',
@@ -101,7 +104,7 @@ def search(text):
 
 async def run_playwright():
   async with async_playwright() as p:
-    browser = await p.chromium.launch(headless = True) # False
+    browser = await p.chromium.launch(headless = open) # False
     context = await browser.new_context(
       user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     )
