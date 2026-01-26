@@ -198,14 +198,16 @@ async def run_playwright():
           # await popup_page.screenshot(path = "debug2.png")
           # st.image("debug2.png")
       # break
+      
+        if popup_page:
+          await popup_page.close()
 
       if line == "KONCERT":
         koncert = True
       else:
         koncert = False
       
-      if popup_page:
-        await popup_page.close()
+      
       
     # content = await page.title()
     await browser.close()
