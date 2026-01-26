@@ -159,6 +159,7 @@ async def run_playwright():
         #   st.write(line)
           
         name = line
+        popup_page = None
         try:
           async with page.expect_popup() as popup_info:
             # peldanyszam = page1.get_by_role("link", name = line).count()
@@ -176,7 +177,8 @@ async def run_playwright():
         except Exception as e:
           # st.error(f"Hiba történt: {e}. A következő esemény body-jánál: {line}")
           koncert = False
-          await popup_page.close()
+          if popup_page:
+            await popup_page.close()
           # await popup_page.screenshot(path = "debug.png")
           # st.image("debug.png")
           continue
@@ -188,7 +190,8 @@ async def run_playwright():
           search(data) # findings = 
           # st.info(findings)
         except Exception as e:
-          await popup_page.close()
+          if popup_page:
+            await popup_page.close()
           # data = await popup_page.locator("body").inner_text()
           # st.error(f"Hiba történt: {e}. A következő esemény szövegénél: {line}")
           # st.error(data)
@@ -200,8 +203,9 @@ async def run_playwright():
         koncert = True
       else:
         koncert = False
-        
-      await popup_page.close()
+      
+      if popup_page:
+        await popup_page.close()
       
     # content = await page.title()
     await browser.close()
