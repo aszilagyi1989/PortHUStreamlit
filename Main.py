@@ -37,7 +37,7 @@ st.set_page_config(
 
 model = ChatOpenAI(model = "gpt-5.2") # OPENAI_MODEL
 
-st.title('Budapesti programok')
+st.title('Budapesti programok', align = 'center')
 
 class Event(BaseModel):
   Cím: Optional[str] = Field(default = "Nincs információ", description = "The address of the event")
@@ -94,7 +94,7 @@ def search(text):
   reduced_text = str(" ").join(relevant_chunks)
   result = runnable.invoke({"text": reduced_text})
   # st.write(type(result))
-  st.write(result)
+  st.json(result.model_dump())
   
   # return result
   
