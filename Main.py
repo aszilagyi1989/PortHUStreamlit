@@ -37,7 +37,7 @@ st.set_page_config(
 
 model = ChatOpenAI(model = "gpt-5.2") # OPENAI_MODEL
 
-st.title('Budapesti programok', align = 'center')
+st.title('Budapesti programok')
 
 class Event(BaseModel):
   Cím: Optional[str] = Field(default = "Nincs információ", description = "The address of the event")
