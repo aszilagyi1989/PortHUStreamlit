@@ -106,7 +106,6 @@ def search(text):
   element.add_rows(result_df.astype(str))
   # return result
   
-@st.cache_resource
 async def run_playwright():
   async with async_playwright() as p:
     browser = await p.chromium.launch(headless = open) # False
