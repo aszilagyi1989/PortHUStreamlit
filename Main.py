@@ -46,7 +46,7 @@ st.set_page_config(
 if "df" not in st.session_state:
   st.session_state.df = pd.DataFrame(columns = ["Esemény", "Cím", "Dátum", "Helyszín", "Ár", "Link"]) # "Leírás",
 
-model = ChatOpenAI(model = "gpt-5.2") # OPENAI_MODEL
+model = ChatOpenAI(model = "gpt-5-nano") # gpt-5.2 OPENAI_MODEL
 
 st.title('Budapesti programok', anchor = False, help = None)
 
@@ -265,3 +265,26 @@ if selected == 'Koncertek':
   
   # page.get_by_role("button", name = "2").click()
   # page.get_by_text("Hirdetés átugrása").click()
+  
+  # page.locator("#date").select_option("anytime")
+  # page.goto("https://port.hu/programkereso/zene?s=&lat=&lng=&relevance=1&q=&area=&area%5B%5D=concert&date=anytime&events_from=2026-01-27&events_until=2026-01-28&city=cityList-3372&isFree=0&isOnline=0&isDisabled=0&isChild=0&agefrom=2&ageto=12")
+  
+  # page.locator("#date").select_option("custom")
+  # page.goto("https://port.hu/programkereso/zene?s=&lat=&lng=&relevance=1&q=&area=&area%5B%5D=concert&date=custom&events_from=2026-01-27&events_until=2026-01-28&city=cityList-3372&isFree=0&isOnline=0&isDisabled=0&isChild=0&agefrom=2&ageto=12")
+  # page.locator("#events_from").click()
+  # page.get_by_role("link", name="30").click()
+  # page.locator("#events_until").click()
+  # page.get_by_role("link", name="31").click()
+  # page.get_by_text("találat megjelenítése").click()
+  # page.locator("#events_until").click()
+  # page.locator("#ui-datepicker-div").get_by_role("combobox").select_option("1")
+  # page.get_by_role("link", name="8", exact=True).click()
+  # page.locator("#events_from").click()
+  # page.locator("#ui-datepicker-div").get_by_role("combobox").select_option("1")
+  # page.get_by_role("link", name="1", exact=True).click()
+  
+  # page.get_by_text("Nincs kiválasztva").click()
+  # page.locator("#genre-select").get_by_text("Koncert").click()
+  # page.get_by_role("checkbox", name="rock/metal").check()
+  # page.goto("https://port.hu/programkereso/zene?s=&lat=&lng=&relevance=1&q=&area=&area%5B%5D=concert&date=today&events_from=2026-01-27&events_until=2026-01-28&city=cityList-3372&genre%5B%5D=111&isFree=0&isOnline=0&isDisabled=0&isChild=0&agefrom=2&ageto=12")
+  # page.get_by_text("2 találat").click()
