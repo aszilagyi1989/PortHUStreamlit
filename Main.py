@@ -39,6 +39,9 @@ st.set_page_config(
                 'About': 'This webapplication makes you able to scrape data from port.hu website with PlayWright.'}
 )
 
+if "df" not in st.session_state:
+  st.session_state.df = pd.DataFrame(columns = ["Cím", "Dátum", "Helyszín", "Ár", "Leírás", "Link"])
+
 model = ChatOpenAI(model = "gpt-5.2") # OPENAI_MODEL
 
 st.title('Budapesti programok', anchor = False, help = None)
@@ -85,7 +88,7 @@ def search(text):
               "You are an expert extraction algorithm. "
               "Only extract relevant information from the text. "
               "If you do not know the value of an attribute asked to extract, "
-              "return Nincs információ instead of NULL for the attribute's value.",
+              "return Nincs információ instead of None for the attribute's value.",
           ),
           ("human", text), # "{text}"
       ]
@@ -98,9 +101,9 @@ def search(text):
   reduced_text = str(" ").join(relevant_chunks)
   result = runnable.invoke({"text": reduced_text})
   
-  result_df = pd.DataFrame([result.model_dump()]) # for u in users
-  st.dataframe(result_df, hide_index = True) 
-  
+  result_df = pd.DataFrame([result.model_dump()])
+  # st.dataframe(result_df, hide_index = True) 
+  element.add_rows(result_df)
   # return result
   
 
@@ -230,6 +233,7 @@ selected = option_menu(None, ['Koncertek'], menu_icon = 'cast', default_index = 
 
 if selected == 'Koncertek':
   # st.write(sys.platform)
+  element = st.dataframe(st.session_state.df, hide_index = True)
   result = asyncio.run(run_playwright()) #  
   
   # page.get_by_role("button", name = "2").click()
