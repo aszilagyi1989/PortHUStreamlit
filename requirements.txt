@@ -13,5 +13,6 @@ playwright
 pydantic
 pydantic-settings
 streamlit==1.53.0
+streamlit-folium
 streamlit-option-menu
 typing

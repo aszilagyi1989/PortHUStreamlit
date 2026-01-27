@@ -17,6 +17,8 @@ from pydantic_settings import BaseSettings
 from typing import Optional, List
 from geopy.geocoders import Nominatim
 import folium
+from folium.plugins import MarkerCluster
+from streamlit_folium import st_folium
 # import nest_asyncio
 # nest_asyncio.apply()
 import subprocess
@@ -74,39 +76,54 @@ def get_relevant_chunks(retriever, queries: List[str]) -> List[str]:
   return list(set(retrieved_texts))
 
 def search(text):
-  # st.write(text)
-  doc = Document(page_content = text)
+  
+  try:
+    doc = Document(page_content = text)
+  
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size = 1000)
+    splits = text_splitter.split_documents([doc])
+    
+    vectorstore = Chroma.from_documents(splits, embedding = OpenAIEmbeddings())
+    retriever = vectorstore.as_retriever(search_type = "similarity")
+    
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            (
+                "system",
+                "You are an expert extraction algorithm. "
+                "Only extract relevant information from the text. "
+                "If you do not know the value of an attribute asked to extract, "
+                "return Nincs információ instead of None, NULL or Empty values for the attribute's value.",
+            ),
+            ("human", text), # "{text}"
+        ]
+    )
+    
+    runnable = prompt | model.with_structured_output(schema = Event)
+        
+    relevant_chunks = get_relevant_chunks(retriever, queries)
+    
+    reduced_text = str(" ").join(relevant_chunks)
+    result = runnable.invoke({"text": reduced_text})
+    
+    result_df = pd.DataFrame([result.model_dump()])
+    element.add_rows(result_df.astype(str))
+  except Exception as e:
+    st.error(f"Hiba történt: {e}")
+  
+  try:
+    if pd.isna(result_df['Cím'].to_numpy()) == False and result_df['Cím'].to_numpy() != "Nincs információ":
+      location = geolocator.geocode(result_df['Cím'].to_numpy())
 
-  text_splitter = RecursiveCharacterTextSplitter(chunk_size = 1000)
-  splits = text_splitter.split_documents([doc])
-  
-  vectorstore = Chroma.from_documents(splits, embedding = OpenAIEmbeddings())
-  retriever = vectorstore.as_retriever(search_type = "similarity")
-  
-  prompt = ChatPromptTemplate.from_messages(
-      [
-          (
-              "system",
-              "You are an expert extraction algorithm. "
-              "Only extract relevant information from the text. "
-              "If you do not know the value of an attribute asked to extract, "
-              "return Nincs információ instead of None, NULL or Empty values for the attribute's value.",
-          ),
-          ("human", text), # "{text}"
-      ]
-  )
-  
-  runnable = prompt | model.with_structured_output(schema = Event)
-      
-  relevant_chunks = get_relevant_chunks(retriever, queries)
-  
-  reduced_text = str(" ").join(relevant_chunks)
-  result = runnable.invoke({"text": reduced_text})
-  
-  result_df = pd.DataFrame([result.model_dump()])
-  # st.dataframe(result_df, hide_index = True) 
-  element.add_rows(result_df.astype(str))
-  # return result
+      if location:
+          # st.write(f"Cím: {location.address}")
+          # st.write(f"Szélesség: {location.latitude}, Hosszúság: {location.longitude}")
+          folium.Marker(location = [location.latitude, location.longitude], popup = 'Helyszín: {} <br> Dátum: {}'.format(result_df['Helyszín'].to_numpy(), result_df['Dátum'].to_numpy())).add_to(marker_cluster)
+      else:
+          st.error("Nem találom a megadott címet.")
+  except Exception as e:
+    st.error(e)
+
   
 async def run_playwright():
   async with async_playwright() as p:
@@ -230,22 +247,20 @@ async def run_playwright():
     
     return ""
 
-# if 'task_started' not in st.session_state:
-#   st.session_state.task_started = False
-
-# @st.cache_data
-# def get_cached_data():
-#   return asyncio.run(run_playwright())
+geolocator = Nominatim(user_agent = "my_geocoder")
 
 selected = option_menu(None, ['Koncertek'], menu_icon = 'cast', default_index = 0, orientation = 'horizontal')
 
 if selected == 'Koncertek':
   # st.write(sys.platform)
-  # if not st.session_state.task_started:
-  #   st.session_state.task_started = True
   element = st.dataframe(st.session_state.df, hide_index = True)
+  
+  map = folium.Map(location = [47.4983, 19.0408], zoom_start = 11)
+  marker_cluster = MarkerCluster().add_to(map)
+  
+  # st_folium(map, height = 500, width = 700) # width = 700
   asyncio.run(run_playwright())
-  # result = get_cached_data() # asyncio.run(run_playwright())
+  st.components.v1.html(folium.Figure().add_child(map).render(), height = 500)
   
   # page.get_by_role("button", name = "2").click()
   # page.get_by_text("Hirdetés átugrása").click()
