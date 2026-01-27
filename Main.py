@@ -44,7 +44,7 @@ st.set_page_config(
 )
 
 if "df" not in st.session_state:
-  st.session_state.df = pd.DataFrame(columns = ["Cím", "Dátum", "Helyszín", "Ár", "Leírás", "Link"])
+  st.session_state.df = pd.DataFrame(columns = ["Esemény", "Cím", "Dátum", "Helyszín", "Ár", "Leírás", "Link"])
 
 model = ChatOpenAI(model = "gpt-5.2") # OPENAI_MODEL
 
@@ -75,7 +75,7 @@ def get_relevant_chunks(retriever, queries: List[str]) -> List[str]:
     
   return list(set(retrieved_texts))
 
-def search(text):
+def search(text, eventname):
   
   try:
     doc = Document(page_content = text)
@@ -107,6 +107,7 @@ def search(text):
     result = runnable.invoke({"text": reduced_text})
     
     result_df = pd.DataFrame([result.model_dump()])
+    result_df.insert(0, 'Esemény', [eventname])
     element.add_rows(result_df.astype(str))
   except Exception as e:
     st.error(f"Hiba történt: {e}")
@@ -118,7 +119,7 @@ def search(text):
       if location:
           # st.write(f"Cím: {location.address}")
           # st.write(f"Szélesség: {location.latitude}, Hosszúság: {location.longitude}")
-          folium.Marker(location = [location.latitude, location.longitude], popup = 'Helyszín: {} <br> Dátum: {}'.format(result_df['Helyszín'].to_numpy(), result_df['Dátum'].to_numpy())).add_to(marker_cluster)
+          folium.Marker(location = [location.latitude, location.longitude], popup = 'Esemény: {} <br> Helyszín: {} <br> Dátum: {}'.format(result_df['Esemény'].to_numpy(), result_df['Helyszín'].to_numpy(), result_df['Dátum'].to_numpy())).add_to(marker_cluster)
       else:
           st.error("Nem találom a megadott címet.")
   except Exception as e:
@@ -220,7 +221,7 @@ async def run_playwright():
           data = str(data).split("Címlapon")[0]
           data = str(data).split("MEGOSZTOM")[1]
           # st.info(data)
-          search(data) # findings = 
+          search(data, line) # findings = 
           # st.info(findings)
         except Exception as e:
           if popup_page:
