@@ -30,7 +30,7 @@ if sys.platform == 'win32':
   delay = 1000
 elif sys.platform == 'linux':
   open = True
-  delay = 500
+  delay = 100
 
 st.set_page_config(
   layout = 'wide',
