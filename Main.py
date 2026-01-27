@@ -248,7 +248,7 @@ async def run_playwright():
     
     return ""
 
-geolocator = Nominatim(user_agent = "my_geocoder")
+geolocator = Nominatim(user_agent = "my_geocoder", timeout = 10)
 
 selected = option_menu(None, ['Koncertek'], menu_icon = 'cast', default_index = 0, orientation = 'horizontal')
 
