@@ -88,7 +88,7 @@ def search(text):
               "You are an expert extraction algorithm. "
               "Only extract relevant information from the text. "
               "If you do not know the value of an attribute asked to extract, "
-              "return Nincs információ instead of None/NULL/Empty for the attribute's value.",
+              "return Nincs információ instead of None, NULL or Empty values for the attribute's value.",
           ),
           ("human", text), # "{text}"
       ]
@@ -103,10 +103,10 @@ def search(text):
   
   result_df = pd.DataFrame([result.model_dump()])
   # st.dataframe(result_df, hide_index = True) 
-  element.add_rows(result_df)
+  element.add_rows(result_df.astype(str))
   # return result
   
-
+@st.cache_resource
 async def run_playwright():
   async with async_playwright() as p:
     browser = await p.chromium.launch(headless = open) # False
