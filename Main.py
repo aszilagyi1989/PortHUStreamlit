@@ -46,7 +46,7 @@ st.set_page_config(
 if "df" not in st.session_state:
   st.session_state.df = pd.DataFrame(columns = ["Esemény", "Cím", "Dátum", "Helyszín", "Ár", "Link"]) # "Leírás",
 
-model = ChatOpenAI(model = "gpt-5-nano") # gpt-5.2 OPENAI_MODEL
+model = ChatOpenAI(model = "gpt-5-mini") # gpt-5.2 OPENAI_MODEL
 
 st.title('Budapesti programok', anchor = False, help = None)
 
