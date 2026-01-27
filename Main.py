@@ -44,7 +44,7 @@ st.set_page_config(
 )
 
 if "df" not in st.session_state:
-  st.session_state.df = pd.DataFrame(columns = ["Esemény", "Cím", "Dátum", "Helyszín", "Ár", "Leírás", "Link"])
+  st.session_state.df = pd.DataFrame(columns = ["Esemény", "Cím", "Dátum", "Helyszín", "Ár", "Link"]) # "Leírás",
 
 model = ChatOpenAI(model = "gpt-5.2") # OPENAI_MODEL
 
@@ -55,7 +55,7 @@ class Event(BaseModel):
   Dátum: Optional[str] = Field(default = "Nincs információ", description = "The date of the event")
   Helyszín: Optional[str] = Field(default = "Nincs információ", description = "The location of the event")
   Ár: Optional[str] = Field(default = "Nincs információ", description = "The price of the event")
-  Leírás: Optional[str] = Field(default = "Nincs információ", description = "The description of the event")
+  # Leírás: Optional[str] = Field(default = "Nincs információ", description = "The description of the event")
   Link: Optional[str] = Field(default = "Nincs információ", description = "The hyperlink of the event")
 
 queries = [
@@ -63,7 +63,7 @@ queries = [
       f"Date of the event",
       f"Location of the event",
       f"Price of the event",
-      f"Description of the event",
+      # f"Description of the event",
       f"Link of the event",
 ]
 
