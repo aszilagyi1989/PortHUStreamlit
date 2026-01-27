@@ -88,7 +88,7 @@ def search(text):
               "You are an expert extraction algorithm. "
               "Only extract relevant information from the text. "
               "If you do not know the value of an attribute asked to extract, "
-              "return Nincs információ instead of None for the attribute's value.",
+              "return Nincs információ instead of None/NULL/Empty for the attribute's value.",
           ),
           ("human", text), # "{text}"
       ]
