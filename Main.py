@@ -20,6 +20,7 @@ import folium
 from folium.plugins import MarkerCluster
 from streamlit_folium import st_folium
 import datetime
+import math
 # import nest_asyncio
 # nest_asyncio.apply()
 import subprocess
@@ -174,18 +175,17 @@ async def run_playwright():
 
     await page.get_by_text("találat megjelenítése").click(force = True)
     await page.wait_for_timeout(delay)
-
-    
     
     all_page_text = await page.locator("body").inner_text()
     
     all_page_text = str(all_page_text).split("Címlapon")[0] 
     talalatok = str(all_page_text).split("Hozzám legközelebb")[0]
     lines = talalatok.splitlines()
-    result = 0
+    pages = 0
     for line in lines:
       if line.endswith("találat megjelenítése"):
-        result = int(line.split(" ")[0])
+        pages = int(line.split(" ")[0])
+        pages = math.ceil(pages / 20)
         break
       
     koncertek = str(all_page_text).split("Hozzám legközelebb")[1]
@@ -198,15 +198,10 @@ async def run_playwright():
       if line == "JEGY":
         continue
 
-      if koncert == True and line != name: # and line != "Ringató"
+      if koncert == True and line != name:
         
         # if "|" in line:
         #   line = str(line).split("|")[0]
-        #   line = line[:-2]
-        #   st.write(line)
-        #   
-        # if "/" in line:
-        #   line = str(line).split("/")[0]
         #   line = line[:-2]
         #   st.write(line)
           
@@ -214,11 +209,10 @@ async def run_playwright():
         popup_page = None
         try:
           async with page.expect_popup() as popup_info:
-            # peldanyszam = page1.get_by_role("link", name = line).count()
             await page.wait_for_timeout(delay)
             await page.get_by_role("link", name = line).nth(0).click(force = True)
         except Exception as e:
-          # st.error(f"Hiba történt: {e}. A következő esemény betöltésénél: {line}")
+          st.error(f"Hiba történt: {e}. A következő esemény betöltésénél: {line}")
           koncert = False
           continue
           
@@ -227,29 +221,19 @@ async def run_playwright():
         try:
           data = await popup_page.locator("body").inner_text()
         except Exception as e:
-          # st.error(f"Hiba történt: {e}. A következő esemény body-jánál: {line}")
+          st.error(f"Hiba történt: {e}. A következő esemény body-jánál: {line}")
           koncert = False
           if popup_page:
             await popup_page.close()
-          # await popup_page.screenshot(path = "debug.png")
-          # st.image("debug.png")
           continue
         
         try:
           data = str(data).split("Címlapon")[0]
           data = str(data).split("MEGOSZTOM")[1]
-          # st.info(data)
-          search(data, line) # findings = 
-          # st.info(findings)
+          search(data, line)
         except Exception as e:
           if popup_page:
             await popup_page.close()
-          # data = await popup_page.locator("body").inner_text()
-          # st.error(f"Hiba történt: {e}. A következő esemény szövegénél: {line}")
-          # st.error(data)
-          # await popup_page.screenshot(path = "debug2.png")
-          # st.image("debug2.png")
-      # break
       
         if popup_page:
           await popup_page.close()
@@ -258,8 +242,6 @@ async def run_playwright():
         koncert = True
       else:
         koncert = False
-      
-      
       
     # content = await page.title()
     await browser.close()
@@ -273,10 +255,7 @@ today = datetime.datetime.now()
 selected = option_menu(None, ['Koncertek'], menu_icon = 'cast', default_index = 0, orientation = 'horizontal')
 
 if selected == 'Koncertek':
-  # st.write(sys.platform)
-    
   DateRange = st.date_input(label = 'Időszak kiválasztása', value = (datetime.date(today.year, today.month, today.day), datetime.date(today.year, today.month, today.day)), min_value = datetime.date(today.year, today.month, today.day), max_value = datetime.date(today.year + 2, today.month, today.day), format = 'YYYY-MM-DD')
-  
   if st.button("Keresés"):
     
     try:
