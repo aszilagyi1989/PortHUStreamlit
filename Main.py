@@ -191,7 +191,7 @@ async def run_playwright():
     koncertek = str(all_page_text).split("Hozzám legközelebb")[1]
     lines = str(koncertek).splitlines()
     koncert = False
-    name = ""
+    # name = ""
     
     for pageNumber in range(pageNumbers):
       # st.info(pageNumbers)
@@ -210,17 +210,15 @@ async def run_playwright():
         all_page_text = str(all_page_text).split("Címlapon")[0]
         koncertek = str(all_page_text).split("Hozzám legközelebb")[1]
         lines = str(koncertek).splitlines()
-        
-        st.info(lines)
     
       for line in lines:
         
         if line == "JEGY":
           continue
   
-        if koncert == True and line != name:
-            
-          name = line
+        if koncert == True and line not in lista: # and line != name
+          lista.append(line)
+          # name = line
           popup_page = None
           try:
             async with page.expect_popup() as popup_info:
@@ -266,6 +264,8 @@ geolocator = Nominatim(user_agent = "my_geocoder", timeout = 10)
 
 today = datetime.datetime.now()
 
+lista = []
+
 selected = option_menu(None, ['Koncertek'], menu_icon = 'cast', default_index = 0, orientation = 'horizontal')
 
 if selected == 'Koncertek':
@@ -287,7 +287,6 @@ if selected == 'Koncertek':
     asyncio.run(run_playwright())
     st.components.v1.html(folium.Figure().add_child(map).render(), height = 500)
   
-  # page.get_by_role("button", name = "2").click()
   # page.get_by_text("Hirdetés átugrása").click()
 
 
