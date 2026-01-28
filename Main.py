@@ -175,8 +175,13 @@ async def run_playwright():
     
     # page.goto("https://port.hu/programkereso/zene?s=&lat=&lng=&relevance=1&q=&area=&area%5B%5D=concert&date=custom&events_from=2026-01-30&events_until=2026-01-31&city=cityList-3372&isFree=0&isOnline=0&isDisabled=0&isChild=0&agefrom=2&ageto=12")
     await page.get_by_text("Mit? Koncert Koncert Fesztivál Kiállítás Egyéb Mikor? Ma Holnap A héten A hétvé").click()
+    await page.wait_for_timeout(delay)
+    await page.screenshot(path = "debug3.png")
+    st.image("debug3.png")
     await page.get_by_text("találat megjelenítése").click(force = True)
     await page.wait_for_timeout(delay)
+    await page.screenshot(path = "debug4.png")
+    st.image("debug4.png")
     
     
     all_page_text = await page.locator("body").inner_text()
