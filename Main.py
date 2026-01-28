@@ -19,6 +19,7 @@ from geopy.geocoders import Nominatim
 import folium
 from folium.plugins import MarkerCluster
 from streamlit_folium import st_folium
+import datetime
 # import nest_asyncio
 # nest_asyncio.apply()
 import subprocess
@@ -121,7 +122,7 @@ def search(text, eventname):
           # st.write(f"Szélesség: {location.latitude}, Hosszúság: {location.longitude}")
           folium.Marker(location = [location.latitude, location.longitude], popup = 'Esemény: {} <br> Helyszín: {} <br> Dátum: {}'.format(result_df['Esemény'].to_numpy(), result_df['Helyszín'].to_numpy(), result_df['Dátum'].to_numpy())).add_to(marker_cluster)
       else:
-          st.error("Nem találom a megadott címet.")
+          st.error(f"Nem találom a megadott címet: {result_df['Cím'].to_numpy()}")
   except Exception as e:
     st.error(e)
 
@@ -156,8 +157,21 @@ async def run_playwright():
       await page.wait_for_timeout(delay)
       # await page.get_by_role("link", name = "Koncert", exact = True).click(force = True)
     
+    await page.locator("#date").select_option("custom")
+    await page.wait_for_timeout(delay)
+    
+    await page.locator("#events_from").click()
+    await page.locator("#events_from").fill(start_date.isoformat())
+    await page.wait_for_timeout(delay)
+    await page.locator("#events_until").click()
+    await page.locator("#events_until").fill(end_date.isoformat())
+    await page.wait_for_timeout(delay)
+    
+    # page.goto("https://port.hu/programkereso/zene?s=&lat=&lng=&relevance=1&q=&area=&area%5B%5D=concert&date=custom&events_from=2026-01-30&events_until=2026-01-31&city=cityList-3372&isFree=0&isOnline=0&isDisabled=0&isChild=0&agefrom=2&ageto=12")
+    await page.get_by_text("Mit? Koncert Koncert Fesztivál Kiállítás Egyéb Mikor? Ma Holnap A héten A hétvé").click()
     await page.get_by_text("találat megjelenítése").click(force = True)
     await page.wait_for_timeout(delay)
+    
     
     all_page_text = await page.locator("body").inner_text()
     
@@ -250,41 +264,31 @@ async def run_playwright():
 
 geolocator = Nominatim(user_agent = "my_geocoder", timeout = 10)
 
+today = datetime.datetime.now()
+
 selected = option_menu(None, ['Koncertek'], menu_icon = 'cast', default_index = 0, orientation = 'horizontal')
 
 if selected == 'Koncertek':
   # st.write(sys.platform)
-  element = st.dataframe(st.session_state.df, hide_index = True)
+    
+  DateRange = st.date_input(label = 'Időszak kiválasztása', value = (datetime.date(today.year, today.month, today.day), datetime.date(today.year, today.month, today.day)), min_value = datetime.date(today.year, today.month, today.day), max_value = datetime.date(today.year + 2, today.month, today.day), format = 'YYYY-MM-DD')
   
-  map = folium.Map(location = [47.4983, 19.0408], zoom_start = 11)
-  marker_cluster = MarkerCluster().add_to(map)
+  if st.button("Keresés"):
+    
+    try:
+      start_date = DateRange[0]
+      end_date = DateRange[1]
+    except Exception as e:
+      st.error(f"Hiba történt: {e}")
   
-  # st_folium(map, height = 500, width = 700) # width = 700
-  asyncio.run(run_playwright())
-  st.components.v1.html(folium.Figure().add_child(map).render(), height = 500)
+    element = st.dataframe(st.session_state.df, hide_index = True)
+    
+    map = folium.Map(location = [47.4983, 19.0408], zoom_start = 11)
+    marker_cluster = MarkerCluster().add_to(map)
+    
+    # st_folium(map, height = 500, width = 700) # width = 700
+    asyncio.run(run_playwright())
+    st.components.v1.html(folium.Figure().add_child(map).render(), height = 500)
   
   # page.get_by_role("button", name = "2").click()
   # page.get_by_text("Hirdetés átugrása").click()
-  
-  # page.locator("#date").select_option("anytime")
-  # page.goto("https://port.hu/programkereso/zene?s=&lat=&lng=&relevance=1&q=&area=&area%5B%5D=concert&date=anytime&events_from=2026-01-27&events_until=2026-01-28&city=cityList-3372&isFree=0&isOnline=0&isDisabled=0&isChild=0&agefrom=2&ageto=12")
-  
-  # page.locator("#date").select_option("custom")
-  # page.goto("https://port.hu/programkereso/zene?s=&lat=&lng=&relevance=1&q=&area=&area%5B%5D=concert&date=custom&events_from=2026-01-27&events_until=2026-01-28&city=cityList-3372&isFree=0&isOnline=0&isDisabled=0&isChild=0&agefrom=2&ageto=12")
-  # page.locator("#events_from").click()
-  # page.get_by_role("link", name="30").click()
-  # page.locator("#events_until").click()
-  # page.get_by_role("link", name="31").click()
-  # page.get_by_text("találat megjelenítése").click()
-  # page.locator("#events_until").click()
-  # page.locator("#ui-datepicker-div").get_by_role("combobox").select_option("1")
-  # page.get_by_role("link", name="8", exact=True).click()
-  # page.locator("#events_from").click()
-  # page.locator("#ui-datepicker-div").get_by_role("combobox").select_option("1")
-  # page.get_by_role("link", name="1", exact=True).click()
-  
-  # page.get_by_text("Nincs kiválasztva").click()
-  # page.locator("#genre-select").get_by_text("Koncert").click()
-  # page.get_by_role("checkbox", name="rock/metal").check()
-  # page.goto("https://port.hu/programkereso/zene?s=&lat=&lng=&relevance=1&q=&area=&area%5B%5D=concert&date=today&events_from=2026-01-27&events_until=2026-01-28&city=cityList-3372&genre%5B%5D=111&isFree=0&isOnline=0&isDisabled=0&isChild=0&agefrom=2&ageto=12")
-  # page.get_by_text("2 találat").click()
