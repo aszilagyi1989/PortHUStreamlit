@@ -119,11 +119,17 @@ def search(text, eventname):
       location = geolocator.geocode(result_df['Cím'].to_numpy())
 
       if location:
-          # st.write(f"Cím: {location.address}")
-          # st.write(f"Szélesség: {location.latitude}, Hosszúság: {location.longitude}")
+        # st.write(f"Cím: {location.address}")
+        # st.write(f"Szélesség: {location.latitude}, Hosszúság: {location.longitude}")
+        folium.Marker(location = [location.latitude, location.longitude], popup = 'Esemény: {} <br> Helyszín: {} <br> Dátum: {}'.format(result_df['Esemény'].to_numpy(), result_df['Helyszín'].to_numpy(), result_df['Dátum'].to_numpy())).add_to(marker_cluster)
+      else:
+        wrong_address = str(result_df['Cím'].to_numpy()).replace("utca", "út")
+        wrong_address = str(wrong_address).replace("Petőfi-híd budai hídfő", "")
+        location = geolocator.geocode(wrong_address)
+        if location:
           folium.Marker(location = [location.latitude, location.longitude], popup = 'Esemény: {} <br> Helyszín: {} <br> Dátum: {}'.format(result_df['Esemény'].to_numpy(), result_df['Helyszín'].to_numpy(), result_df['Dátum'].to_numpy())).add_to(marker_cluster)
-      # else:
-      #     st.error(f"Nem találom a megadott címet: {result_df['Cím'].to_numpy()}")
+        else:
+          st.error(f"Nem találtam a megadott címet javítva se: {wrong_address}")
   except Exception as e:
     st.error(e)
 
