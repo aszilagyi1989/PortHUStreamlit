@@ -31,10 +31,10 @@ if sys.platform == 'win32':
   loop = asyncio.new_event_loop()
   asyncio.set_event_loop(loop)
   open = False
-  delay = 1000
+  delay = 800
 elif sys.platform == 'linux':
   open = True
-  delay = 250
+  delay = 500 # 250
 
 st.set_page_config(
   layout = 'wide',
@@ -199,11 +199,6 @@ async def run_playwright():
         continue
 
       if koncert == True and line != name:
-        
-        # if "|" in line:
-        #   line = str(line).split("|")[0]
-        #   line = line[:-2]
-        #   st.write(line)
           
         name = line
         popup_page = None
@@ -243,7 +238,6 @@ async def run_playwright():
       else:
         koncert = False
       
-    # content = await page.title()
     await browser.close()
     
     return ""
