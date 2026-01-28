@@ -122,8 +122,8 @@ def search(text, eventname):
           # st.write(f"Cím: {location.address}")
           # st.write(f"Szélesség: {location.latitude}, Hosszúság: {location.longitude}")
           folium.Marker(location = [location.latitude, location.longitude], popup = 'Esemény: {} <br> Helyszín: {} <br> Dátum: {}'.format(result_df['Esemény'].to_numpy(), result_df['Helyszín'].to_numpy(), result_df['Dátum'].to_numpy())).add_to(marker_cluster)
-      else:
-          st.error(f"Nem találom a megadott címet: {result_df['Cím'].to_numpy()}")
+      # else:
+      #     st.error(f"Nem találom a megadott címet: {result_df['Cím'].to_numpy()}")
   except Exception as e:
     st.error(e)
 
@@ -181,11 +181,11 @@ async def run_playwright():
     all_page_text = str(all_page_text).split("Címlapon")[0] 
     talalatok = str(all_page_text).split("Hozzám legközelebb")[0]
     lines = talalatok.splitlines()
-    pages = 0
+    pageNumbers = 0
     for line in lines:
       if line.endswith("találat megjelenítése"):
-        pages = int(line.split(" ")[0])
-        pages = math.ceil(pages / 20)
+        pageNumbers = int(line.split(" ")[0])
+        pageNumbers = math.ceil(pageNumbers / 20)
         break
       
     koncertek = str(all_page_text).split("Hozzám legközelebb")[1]
@@ -193,50 +193,70 @@ async def run_playwright():
     koncert = False
     name = ""
     
-    for line in lines:
+    for pageNumber in range(pageNumbers):
+      # st.info(pageNumbers)
+      # st.info(pageNumber)
+      # st.info(str(pageNumber + 1))
       
-      if line == "JEGY":
-        continue
-
-      if koncert == True and line != name:
-          
-        name = line
-        popup_page = None
-        try:
-          async with page.expect_popup() as popup_info:
-            await page.wait_for_timeout(delay)
-            await page.get_by_role("link", name = line).nth(0).click(force = True)
-        except Exception as e:
-          st.error(f"Hiba történt: {e}. A következő esemény betöltésénél: {line}")
-          koncert = False
-          continue
-          
-        popup_page = await popup_info.value
-        await popup_page.wait_for_timeout(delay)
-        try:
-          data = await popup_page.locator("body").inner_text()
-        except Exception as e:
-          st.error(f"Hiba történt: {e}. A következő esemény body-jánál: {line}")
-          koncert = False
-          if popup_page:
-            await popup_page.close()
-          continue
+      if pageNumber > 0:
+        await page.get_by_role("button", name = str(pageNumber + 1)).click()
+        await page.wait_for_timeout(delay)
+        # await page.screenshot(path = "debug0.png")
+        # st.image("debug0.png")
         
-        try:
-          data = str(data).split("Címlapon")[0]
-          data = str(data).split("MEGOSZTOM")[1]
-          search(data, line)
-        except Exception as e:
+        all_page_text = await page.locator("body").inner_text()
+        await page.wait_for_timeout(delay)
+        
+        all_page_text = str(all_page_text).split("Címlapon")[0]
+        koncertek = str(all_page_text).split("Hozzám legközelebb")[1]
+        lines = str(koncertek).splitlines()
+        
+        st.info(lines)
+    
+      for line in lines:
+        
+        if line == "JEGY":
+          continue
+  
+        if koncert == True and line != name:
+            
+          name = line
+          popup_page = None
+          try:
+            async with page.expect_popup() as popup_info:
+              await page.wait_for_timeout(delay)
+              await page.get_by_role("link", name = line).nth(0).click(force = True)
+          except Exception as e:
+            # st.error(f"Hiba történt: {e}. A következő esemény betöltésénél: {line}")
+            koncert = False
+            continue
+            
+          popup_page = await popup_info.value
+          await popup_page.wait_for_timeout(delay)
+          try:
+            data = await popup_page.locator("body").inner_text()
+          except Exception as e:
+            # st.error(f"Hiba történt: {e}. A következő esemény body-jánál: {line}")
+            koncert = False
+            if popup_page:
+              await popup_page.close()
+            continue
+          
+          try:
+            data = str(data).split("Címlapon")[0]
+            data = str(data).split("MEGOSZTOM")[1]
+            search(data, line)
+          except Exception as e:
+            if popup_page:
+              await popup_page.close()
+        
           if popup_page:
             await popup_page.close()
-      
-        if popup_page:
-          await popup_page.close()
-
-      if line == "KONCERT":
-        koncert = True
-      else:
-        koncert = False
+  
+        if line == "KONCERT":
+          koncert = True
+        else:
+          koncert = False
       
     await browser.close()
     
@@ -269,3 +289,8 @@ if selected == 'Koncertek':
   
   # page.get_by_role("button", name = "2").click()
   # page.get_by_text("Hirdetés átugrása").click()
+
+
+# 1123 Budapest, XII. kerület, Jagelló utca 1-3.
+# 1113 Budapest, XI. kerület, Henryk Sławik rakpart, Petőfi-híd budai hídfő
+# 1113 Budapest, XI. kerület, Henryk Sławik rakpart Petőfi-híd budai hídfő
