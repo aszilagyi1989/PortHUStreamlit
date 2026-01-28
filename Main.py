@@ -159,13 +159,19 @@ async def run_playwright():
     
     await page.locator("#date").select_option("custom")
     await page.wait_for_timeout(delay)
+    await page.screenshot(path = "debug0.png")
+    st.image("debug0.png")
     
     await page.locator("#events_from").click()
     await page.locator("#events_from").fill(start_date.isoformat())
     await page.wait_for_timeout(delay)
+    await page.screenshot(path = "debug1.png")
+    st.image("debug1.png")
     await page.locator("#events_until").click()
     await page.locator("#events_until").fill(end_date.isoformat())
     await page.wait_for_timeout(delay)
+    await page.screenshot(path = "debug2.png")
+    st.image("debug2.png")
     
     # page.goto("https://port.hu/programkereso/zene?s=&lat=&lng=&relevance=1&q=&area=&area%5B%5D=concert&date=custom&events_from=2026-01-30&events_until=2026-01-31&city=cityList-3372&isFree=0&isOnline=0&isDisabled=0&isChild=0&agefrom=2&ageto=12")
     await page.get_by_text("Mit? Koncert Koncert Fesztivál Kiállítás Egyéb Mikor? Ma Holnap A héten A hétvé").click()
