@@ -216,40 +216,42 @@ async def run_playwright():
         if line == "JEGY":
           continue
   
-        if koncert == True and line not in lista: # and line != name
-          lista.append(line)
-          # name = line
-          popup_page = None
-          try:
-            async with page.expect_popup() as popup_info:
-              await page.wait_for_timeout(delay)
-              await page.get_by_role("link", name = line).nth(0).click(force = True)
-          except Exception as e:
-            # st.error(f"Hiba történt: {e}. A következő esemény betöltésénél: {line}")
-            koncert = False
-            continue
-            
-          popup_page = await popup_info.value
-          await popup_page.wait_for_timeout(delay)
-          try:
-            data = await popup_page.locator("body").inner_text()
-          except Exception as e:
-            # st.error(f"Hiba történt: {e}. A következő esemény body-jánál: {line}")
-            koncert = False
-            if popup_page:
-              await popup_page.close()
-            continue
+        if koncert == True and line not in lista:
           
-          try:
-            data = str(data).split("Címlapon")[0]
-            data = str(data).split("MEGOSZTOM")[1]
-            search(data, line)
-          except Exception as e:
+          lista.append(line)
+          eventNumbers = await page.get_by_role("link", name = line).count()
+          for eventNumber in range(eventNumbers):
+            popup_page = None
+            try:
+              async with page.expect_popup() as popup_info:
+                await page.wait_for_timeout(delay)
+                await page.get_by_role("link", name = line).nth(eventNumber).click(force = True)
+            except Exception as e:
+              # st.error(f"Hiba történt: {e}. A következő esemény betöltésénél: {line}")
+              koncert = False
+              continue
+              
+            popup_page = await popup_info.value
+            await popup_page.wait_for_timeout(delay)
+            try:
+              data = await popup_page.locator("body").inner_text()
+            except Exception as e:
+              # st.error(f"Hiba történt: {e}. A következő esemény body-jánál: {line}")
+              koncert = False
+              if popup_page:
+                await popup_page.close()
+              continue
+            
+            try:
+              data = str(data).split("Címlapon")[0]
+              data = str(data).split("MEGOSZTOM")[1]
+              search(data, line)
+            except Exception as e:
+              if popup_page:
+                await popup_page.close()
+          
             if popup_page:
               await popup_page.close()
-        
-          if popup_page:
-            await popup_page.close()
   
         if line == "KONCERT":
           koncert = True
@@ -257,8 +259,6 @@ async def run_playwright():
           koncert = False
       
     await browser.close()
-    
-    return ""
 
 geolocator = Nominatim(user_agent = "my_geocoder", timeout = 10)
 
