@@ -125,6 +125,7 @@ def search(text, eventname):
       else:
         wrong_address = str(result_df['Cím'].to_numpy()).replace("utca", "út")
         wrong_address = str(wrong_address).replace("Petőfi-híd budai hídfő", "")
+        wrong_address = str(wrong_address).replace("F épület", "")
         location = geolocator.geocode(wrong_address)
         if location:
           folium.Marker(location = [location.latitude, location.longitude], popup = 'Esemény: {} <br> Helyszín: {} <br> Dátum: {}'.format(result_df['Esemény'].to_numpy(), result_df['Helyszín'].to_numpy(), result_df['Dátum'].to_numpy())).add_to(marker_cluster)
@@ -144,8 +145,16 @@ async def run_playwright():
     context.set_default_timeout(10000)
     
     page = await context.new_page() # browser.
-    await page.goto("https://port.hu/programkereso/zene") # 
-    await page.wait_for_timeout(1000)
+    
+    if jumpword == "KONCERT":
+      await page.goto("https://port.hu/programkereso/zene")
+    elif jumpword == "FESZTIVÁL":
+      await page.goto("https://port.hu/programkereso/fesztival")
+    elif jumpword == "KIÁLLÍTÁS":
+      await page.goto("https://port.hu/programkereso/kiallitas")
+    elif jumpword == "EGYÉB":
+      await page.goto("https://port.hu/programkereso/egyeb")
+    await page.wait_for_timeout(delay)
     
     if sys.platform == 'linux':
       await page.get_by_role("button", name = "CONFIRM").click(force = True)
@@ -163,21 +172,29 @@ async def run_playwright():
       await page.get_by_role("button", name = "Értem!").click(force = True)
       await page.wait_for_timeout(delay)
       # await page.get_by_role("link", name = "Koncert", exact = True).click(force = True)
-    
-    await page.locator("#date").select_option("custom")
-    await page.wait_for_timeout(delay)
-    
-    await page.locator("#events_from").click()
-    await page.locator("#events_from").fill(start_date.isoformat())
-    await page.wait_for_timeout(delay)
+      
+    if today != start_date or today != end_date:
 
-    await page.locator("#events_until").click()
-    await page.locator("#events_until").fill(end_date.isoformat())
-    await page.wait_for_timeout(delay)
-    
-    # page.goto("https://port.hu/programkereso/zene?s=&lat=&lng=&relevance=1&q=&area=&area%5B%5D=concert&date=custom&events_from=2026-01-30&events_until=2026-01-31&city=cityList-3372&isFree=0&isOnline=0&isDisabled=0&isChild=0&agefrom=2&ageto=12")
-    await page.get_by_text("Mit? Koncert Koncert Fesztivál Kiállítás Egyéb Mikor? Ma Holnap A héten A hétvé").click()
-    await page.wait_for_timeout(delay)
+      await page.locator("#date").select_option("custom")
+      await page.wait_for_timeout(delay)
+      
+      await page.locator("#events_from").click()
+      await page.locator("#events_from").fill(start_date.isoformat())
+      await page.wait_for_timeout(delay)
+  
+      await page.locator("#events_until").click()
+      await page.locator("#events_until").fill(end_date.isoformat())
+      await page.wait_for_timeout(delay)
+      
+      if jumpword == "KONCERT":
+        await page.get_by_text("Mit? Koncert Koncert Fesztivál Kiállítás Egyéb Mikor? Ma Holnap A héten A hétvé").click()
+      elif jumpword == "FESZTIVÁL":
+        await page.get_by_text("Mit? Fesztivál Koncert Fesztivál Kiállítás Egyéb Mikor? Ma Holnap A héten A hé").click()
+      elif jumpword == "KIÁLLÍTÁS":
+        await page.get_by_text("Mit? Kiállítás Koncert Fesztivál Kiállítás Egyéb Mikor? Ma Holnap A héten A hé").click()
+      elif jumpword == "EGYÉB":
+        await page.get_by_text("Mit? Egyéb Koncert Fesztivál Kiállítás Egyéb Mikor? Ma Holnap A héten A hétvégé").click()
+      await page.wait_for_timeout(delay)
 
     await page.get_by_text("találat megjelenítése").click(force = True)
     await page.wait_for_timeout(delay)
@@ -259,7 +276,7 @@ async def run_playwright():
             if popup_page:
               await popup_page.close()
   
-        if line == "KONCERT":
+        if line == jumpword: # "KONCERT"
           koncert = True
         else:
           koncert = False
@@ -268,13 +285,74 @@ async def run_playwright():
 
 geolocator = Nominatim(user_agent = "my_geocoder", timeout = 10)
 
-today = datetime.datetime.now()
+today = datetime.datetime.now().date()
 
 lista = []
 
-selected = option_menu(None, ['Koncertek'], menu_icon = 'cast', default_index = 0, orientation = 'horizontal')
+selected = option_menu(None, ['Koncertek', 'Fesztiválok', 'Kiállítások', 'Egyéb események'], menu_icon = 'cast', default_index = 0, orientation = 'horizontal')
 
 if selected == 'Koncertek':
+  jumpword = "KONCERT"
+  DateRange = st.date_input(label = 'Időszak kiválasztása', value = (datetime.date(today.year, today.month, today.day), datetime.date(today.year, today.month, today.day)), min_value = datetime.date(today.year, today.month, today.day), max_value = datetime.date(today.year + 2, today.month, today.day), format = 'YYYY-MM-DD')
+  if st.button("Keresés"):
+    
+    try:
+      start_date = DateRange[0]
+      end_date = DateRange[1]
+    except Exception as e:
+      st.error(f"Hiba történt: {e}")
+  
+    element = st.dataframe(st.session_state.df, hide_index = True)
+    
+    map = folium.Map(location = [47.4983, 19.0408], zoom_start = 11)
+    marker_cluster = MarkerCluster().add_to(map)
+    
+    # st_folium(map, height = 500, width = 700) # width = 700
+    asyncio.run(run_playwright())
+    st.components.v1.html(folium.Figure().add_child(map).render(), height = 500)
+
+elif selected == 'Fesztiválok':
+  jumpword = "FESZTIVÁL"
+  DateRange = st.date_input(label = 'Időszak kiválasztása', value = (datetime.date(today.year, today.month, today.day), datetime.date(today.year, today.month, today.day)), min_value = datetime.date(today.year, today.month, today.day), max_value = datetime.date(today.year + 2, today.month, today.day), format = 'YYYY-MM-DD')
+  if st.button("Keresés"):
+    
+    try:
+      start_date = DateRange[0]
+      end_date = DateRange[1]
+    except Exception as e:
+      st.error(f"Hiba történt: {e}")
+  
+    element = st.dataframe(st.session_state.df, hide_index = True)
+    
+    map = folium.Map(location = [47.4983, 19.0408], zoom_start = 11)
+    marker_cluster = MarkerCluster().add_to(map)
+    
+    # st_folium(map, height = 500, width = 700) # width = 700
+    asyncio.run(run_playwright())
+    st.components.v1.html(folium.Figure().add_child(map).render(), height = 500)
+    
+elif selected == 'Kiállítások':
+  jumpword = "KIÁLLÍTÁS"
+  DateRange = st.date_input(label = 'Időszak kiválasztása', value = (datetime.date(today.year, today.month, today.day), datetime.date(today.year, today.month, today.day)), min_value = datetime.date(today.year, today.month, today.day), max_value = datetime.date(today.year + 2, today.month, today.day), format = 'YYYY-MM-DD')
+  if st.button("Keresés"):
+    
+    try:
+      start_date = DateRange[0]
+      end_date = DateRange[1]
+    except Exception as e:
+      st.error(f"Hiba történt: {e}")
+  
+    element = st.dataframe(st.session_state.df, hide_index = True)
+    
+    map = folium.Map(location = [47.4983, 19.0408], zoom_start = 11)
+    marker_cluster = MarkerCluster().add_to(map)
+    
+    # st_folium(map, height = 500, width = 700) # width = 700
+    asyncio.run(run_playwright())
+    st.components.v1.html(folium.Figure().add_child(map).render(), height = 500)
+    
+elif selected == 'Egyéb események':
+  jumpword = "EGYÉB"
   DateRange = st.date_input(label = 'Időszak kiválasztása', value = (datetime.date(today.year, today.month, today.day), datetime.date(today.year, today.month, today.day)), min_value = datetime.date(today.year, today.month, today.day), max_value = datetime.date(today.year + 2, today.month, today.day), format = 'YYYY-MM-DD')
   if st.button("Keresés"):
     
