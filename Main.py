@@ -128,6 +128,8 @@ def search(text, eventname):
         wrong_address = str(wrong_address).replace("F épület", "")
         if ";" in wrong_address:
           wrong_address = str(wrong_address).split(";")[0]
+        if "és" in wrong_address:
+          wrong_address = str(wrong_address).split("és")[0]
         location = geolocator.geocode(wrong_address)
         if location:
           folium.Marker(location = [location.latitude, location.longitude], popup = 'Esemény: {} <br> Helyszín: {} <br> Dátum: {}'.format(result_df['Esemény'].to_numpy(), result_df['Helyszín'].to_numpy(), result_df['Dátum'].to_numpy())).add_to(marker_cluster)
@@ -291,11 +293,13 @@ today = datetime.datetime.now().date()
 
 lista = []
 
+DateRange = st.date_input(label = 'Időszak kiválasztása', value = (datetime.date(today.year, today.month, today.day), datetime.date(today.year, today.month, today.day)), min_value = datetime.date(today.year, today.month, today.day), max_value = datetime.date(today.year + 2, today.month, today.day), format = 'YYYY-MM-DD', key = "my_date")
+
 selected = option_menu(None, ['Koncertek', 'Fesztiválok', 'Kiállítások', 'Egyéb események'], menu_icon = 'cast', default_index = 0, orientation = 'horizontal')
 
 if selected == 'Koncertek':
+  
   jumpword = "KONCERT"
-  DateRange = st.date_input(label = 'Időszak kiválasztása', value = (datetime.date(today.year, today.month, today.day), datetime.date(today.year, today.month, today.day)), min_value = datetime.date(today.year, today.month, today.day), max_value = datetime.date(today.year + 2, today.month, today.day), format = 'YYYY-MM-DD')
   if st.button("Keresés"):
     
     try:
@@ -314,8 +318,8 @@ if selected == 'Koncertek':
     st.components.v1.html(folium.Figure().add_child(map).render(), height = 500)
 
 elif selected == 'Fesztiválok':
+  
   jumpword = "FESZTIVÁL"
-  DateRange = st.date_input(label = 'Időszak kiválasztása', value = (datetime.date(today.year, today.month, today.day), datetime.date(today.year, today.month, today.day)), min_value = datetime.date(today.year, today.month, today.day), max_value = datetime.date(today.year + 2, today.month, today.day), format = 'YYYY-MM-DD')
   if st.button("Keresés"):
     
     try:
@@ -334,8 +338,8 @@ elif selected == 'Fesztiválok':
     st.components.v1.html(folium.Figure().add_child(map).render(), height = 500)
     
 elif selected == 'Kiállítások':
+  
   jumpword = "KIÁLLÍTÁS"
-  DateRange = st.date_input(label = 'Időszak kiválasztása', value = (datetime.date(today.year, today.month, today.day), datetime.date(today.year, today.month, today.day)), min_value = datetime.date(today.year, today.month, today.day), max_value = datetime.date(today.year + 2, today.month, today.day), format = 'YYYY-MM-DD')
   if st.button("Keresés"):
     
     try:
@@ -354,8 +358,8 @@ elif selected == 'Kiállítások':
     st.components.v1.html(folium.Figure().add_child(map).render(), height = 500)
     
 elif selected == 'Egyéb események':
+  
   jumpword = "EGYÉB"
-  DateRange = st.date_input(label = 'Időszak kiválasztása', value = (datetime.date(today.year, today.month, today.day), datetime.date(today.year, today.month, today.day)), min_value = datetime.date(today.year, today.month, today.day), max_value = datetime.date(today.year + 2, today.month, today.day), format = 'YYYY-MM-DD')
   if st.button("Keresés"):
     
     try:
