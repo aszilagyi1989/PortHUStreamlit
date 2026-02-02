@@ -131,6 +131,8 @@ def search(text, eventname):
           wrong_address = str(wrong_address).split(";")[0]
         if "és" in wrong_address:
           wrong_address = str(wrong_address).split("és")[0]
+        if "(" in wrong_address:
+          wrong_address = str(wrong_address).split("(")[0]
         location = geolocator.geocode(wrong_address)
         if location:
           folium.Marker(location = [location.latitude, location.longitude], popup = 'Esemény: {} <br> Helyszín: {} <br> Dátum: {}'.format(result_df['Esemény'].to_numpy(), result_df['Helyszín'].to_numpy(), result_df['Dátum'].to_numpy())).add_to(marker_cluster)
