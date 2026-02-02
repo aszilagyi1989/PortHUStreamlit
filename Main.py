@@ -34,7 +34,7 @@ if sys.platform == 'win32':
   delay = 800
 elif sys.platform == 'linux':
   open = True
-  delay = 300
+  delay = 400
 
 st.set_page_config(
   layout = 'wide',
@@ -201,7 +201,7 @@ async def run_playwright():
       await page.wait_for_timeout(delay)
 
     await page.get_by_text("találat megjelenítése").click(force = True)
-    await page.wait_for_timeout(delay * 3)
+    await page.wait_for_timeout(1000)
     
     all_page_text = await page.locator("body").inner_text()
     
