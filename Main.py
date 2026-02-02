@@ -34,7 +34,7 @@ if sys.platform == 'win32':
   delay = 800
 elif sys.platform == 'linux':
   open = True
-  delay = 600
+  delay = 200
 
 st.set_page_config(
   layout = 'wide',
@@ -201,7 +201,7 @@ async def run_playwright():
       await page.wait_for_timeout(delay)
 
     await page.get_by_text("találat megjelenítése").click(force = True)
-    await page.wait_for_timeout(delay)
+    await page.wait_for_timeout(delay * 4)
     
     all_page_text = await page.locator("body").inner_text()
     
@@ -287,7 +287,7 @@ async def run_playwright():
       
     await browser.close()
 
-geolocator = Nominatim(user_agent = "my_geocoder", timeout = 10)
+geolocator = Nominatim(user_agent = "askaiwithpy", timeout = 10)
 
 today = datetime.datetime.now().date()
 
