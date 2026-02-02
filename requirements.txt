@@ -2,6 +2,7 @@ altair
 asyncio
 chromadb
 folium
+geopandas
 geopy
 langchain
 langchain-chroma

@@ -16,6 +16,7 @@ from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings
 from typing import Optional, List
 from geopy.geocoders import Nominatim
+import geopandas as gpd
 import folium
 from folium.plugins import MarkerCluster
 from streamlit_folium import st_folium
@@ -135,8 +136,13 @@ def search(text, eventname):
           folium.Marker(location = [location.latitude, location.longitude], popup = 'Esemény: {} <br> Helyszín: {} <br> Dátum: {}'.format(result_df['Esemény'].to_numpy(), result_df['Helyszín'].to_numpy(), result_df['Dátum'].to_numpy())).add_to(marker_cluster)
         else:
           st.error(f"Nem találtam a megadott címet javítva se: {wrong_address}")
-  except Exception as e:
-    st.error(e)
+  except Exception as e2:
+    try:
+      gdf = gpd.tools.geocode(result_df['Cím'].to_numpy(), provider = 'nominatim', user_agent = "sz.adam1989@gmail.com")
+      folium.Marker(location = [gdf.geometry.x, gdf.geometry.x], popup = 'Esemény: {} <br> Helyszín: {} <br> Dátum: {}'.format(result_df['Esemény'].to_numpy(), result_df['Helyszín'].to_numpy(), result_df['Dátum'].to_numpy())).add_to(marker_cluster)
+    except Exception as e:
+      st.error(f"Geopandas-szal sem sikerült: {e2}")
+    # st.error(e)
 
   
 async def run_playwright():
@@ -287,7 +293,7 @@ async def run_playwright():
       
     await browser.close()
 
-geolocator = Nominatim(user_agent = "askaiwithpy", timeout = 10)
+geolocator = Nominatim(user_agent = "sz.adam1989@gmail.com", timeout = 10)
 
 today = datetime.datetime.now().date()
 
