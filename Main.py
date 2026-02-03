@@ -124,10 +124,11 @@ def search(text, eventname):
         # st.write(f"Szélesség: {location.latitude}, Hosszúság: {location.longitude}")
         folium.Marker(location = [location.latitude, location.longitude], popup = 'Esemény: {} <br> Helyszín: {} <br> Dátum: {}'.format(result_df['Esemény'].to_numpy(), result_df['Helyszín'].to_numpy(), result_df['Dátum'].to_numpy())).add_to(marker_cluster)
       else:
+        wrong_address = str(result_df['Cím'].to_numpy())
         if "utca" in wrong_address:
-          wrong_address = str(result_df['Cím'].to_numpy()).replace("utca", "út")
+          wrong_address = str(wrong_address).replace("utca", "út")
         elif "út" in wrong_address:
-          wrong_address = str(result_df['Cím'].to_numpy()).replace("út", "utca")
+          wrong_address = str(wrong_address).replace("út", "utca")
         wrong_address = str(wrong_address).replace("Petőfi-híd budai hídfő", "")
         wrong_address = str(wrong_address).replace("F épület", "")
         if ";" in wrong_address:
@@ -223,7 +224,9 @@ async def run_playwright():
     for line in lines:
       if line.endswith("találat megjelenítése"):
         pageNumbers = int(line.split(" ")[0])
+        st.success(pageNumbers)
         pageNumbers = math.ceil(pageNumbers / 20)
+        st.success(pageNumbers)
         break
       
     koncertek = str(all_page_text).split("Hozzám legközelebb")[1]
