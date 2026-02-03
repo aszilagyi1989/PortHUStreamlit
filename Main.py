@@ -35,7 +35,7 @@ if sys.platform == 'win32':
   delay = 800
 elif sys.platform == 'linux':
   open = True
-  delay = 400
+  delay = 800
 
 st.set_page_config(
   layout = 'wide',
@@ -213,7 +213,7 @@ async def run_playwright():
       await page.wait_for_timeout(delay)
 
     await page.get_by_text("találat megjelenítése").click(force = True)
-    await page.wait_for_timeout(1000)
+    await page.wait_for_timeout(delay)
     
     all_page_text = await page.locator("body").inner_text()
     
@@ -236,8 +236,9 @@ async def run_playwright():
       if pageNumber > 0:
         await page.get_by_role("button", name = str(pageNumber + 1)).click()
         await page.wait_for_timeout(delay)
-        await page.screenshot(path = "debug0.png")
-        st.image("debug0.png")
+        await page.wait_for_timeout(delay)
+        # await page.screenshot(path = "debug0.png")
+        # st.image("debug0.png")
         
         all_page_text = await page.locator("body").inner_text()
         await page.wait_for_timeout(delay)
