@@ -224,27 +224,20 @@ async def run_playwright():
     for line in lines:
       if line.endswith("találat megjelenítése"):
         pageNumbers = int(line.split(" ")[0])
-        # st.success(pageNumbers)
         pageNumbers = math.ceil(pageNumbers / 20)
-        # st.success(pageNumbers)
         break
       
     koncertek = str(all_page_text).split("Hozzám legközelebb")[1]
     lines = str(koncertek).splitlines()
     koncert = False
-    # name = ""
     
     for pageNumber in range(pageNumbers):
-      # st.info(pageNumbers)
-      # st.info(pageNumber)
-      # st.info(str(pageNumber + 1))
-      st.success(pageNumber)
+      
       if pageNumber > 0:
-        st.success("Következő oldal")
         await page.get_by_role("button", name = str(pageNumber + 1)).click()
         await page.wait_for_timeout(delay)
-        # await page.screenshot(path = "debug0.png")
-        # st.image("debug0.png")
+        await page.screenshot(path = "debug0.png")
+        st.image("debug0.png")
         
         all_page_text = await page.locator("body").inner_text()
         await page.wait_for_timeout(delay)
